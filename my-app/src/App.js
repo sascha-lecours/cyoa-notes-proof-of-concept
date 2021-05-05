@@ -9,7 +9,9 @@ import CreateUser from './components/oldComponents/CreateUser'
 import { getAllUsers, createUser } from './services/UserService'
 // placeholders end
 
-import { Header } from './components/Header'
+import { Header } from './components/Header';
+import { Book } from './components/Book';
+
 
 function App() {
 
@@ -91,8 +93,8 @@ function App() {
     return (
       <div className="App">
         <Header></Header>
-        <div className="container mrgnbtm">
-          this is the mrgnbtm container
+        <div className="centralBody">
+          <Book></Book>
         </div>
         <div className="row mrgnbtm">
           This is the mrgnbtm row

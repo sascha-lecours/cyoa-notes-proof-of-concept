@@ -1,12 +1,4 @@
 
-.header {
-  width: 100%;
-  padding: 2%;
-  background-color: rgb(0, 0, 0);
-  color: white;
-  text-align: center;
-}
-
 .display-board {
   width: 100%;
   background-color: rgb(555, 200, 789);
@@ -21,4 +13,9 @@
 
 .mrgnbtm {
   margin-top: 20px;
+  margin-left: 2px;
+}
+
+.centralBody {
+  display: flex;
 }

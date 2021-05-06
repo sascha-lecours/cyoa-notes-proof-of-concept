@@ -10,6 +10,7 @@ import { getAllUsers, createUser } from './services/UserService'
 // placeholders end
 
 import { Header } from './components/Header';
+import { Footer } from './components/Footer';
 import { Book } from './components/Book';
 
 
@@ -96,9 +97,7 @@ function App() {
         <div className="centralBody">
           <Book></Book>
         </div>
-        <div className="row mrgnbtm">
-          This is the mrgnbtm row
-        </div>
+        <Footer></Footer>
       </div>
   );
 }

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Page } from './Page';
+import { LeftPage } from './LeftPage';
+import { RightPage } from './RightPage';
 
 import { myPalette } from './appearance/paletteConstants.js';
 
@@ -11,8 +12,8 @@ export class Book extends Component {
     render() {
 
         const bookStyle = {
-            width: '95%',
-            'min-height': '550px',
+            width: '100%',
+            'min-height': '600px',
             padding: '2%',
             margin: 'auto',
             backgroundColor: myPalette[0],
@@ -23,8 +24,8 @@ export class Book extends Component {
 
         return (
             <div style={bookStyle}>
-                <Page></Page>
-                <Page></Page>
+                <LeftPage />
+                <RightPage />
             </div>
         )
     }

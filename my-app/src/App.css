@@ -19,3 +19,7 @@
 .centralBody {
   display: flex;
 }
+
+.app {
+    max-height: 100vh;
+}

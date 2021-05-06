@@ -8,6 +8,7 @@ export const Header = () => {
 
         width: '100%',
         padding: '2%',
+        'max-height' : '110px',
         backgroundColor: myPalette[1],
         color: myPalette[3],
         textAlign: 'center'

@@ -7,15 +7,15 @@ export const Footer = () => {
     const footerStyle = {
 
         width: '100%',
-        padding: '2%',
+        padding: '3%',
         backgroundColor: myPalette[3],
         color: myPalette[1],
         textAlign: 'center'
     }
 
     return(
-        <div style={headerStyle}>
-            <h2>Sic erat legebatur</h2>
+        <div style={footerStyle}>
+            <h4><em>Sic erat legebatur</em></h4>
         </div>
     )
 }

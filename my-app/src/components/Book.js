@@ -3,25 +3,20 @@ import { LeftPage } from './LeftPage';
 import { RightPage } from './RightPage';
 
 import { myPalette } from './appearance/paletteConstants.js';
-//import { getMarginNotes } from '../services/GetMarginNotes';
-//import { getStoryText } from '../services/GetStoryText';
 
 
 export class Book extends Component {
 
     constructor(props) {
         super(props);
-        /*
         this.state = {
+            isLoaded: false,
             marginNotes: {}, 
             storyText: ''
         };
-        */
-        this.getMarginNotes = this.props.getMarginNotes;
-        this.getStoryText = this.props.getStoryText;
 
-        this.fetchMarginNotes = () => {
-            this.getMarginNotes()
+        this.fetchMarginNotes = async () => {
+            this.props.getMarginNotes()
               .then(json => {
                 //console.log(json);
                 return(json);
@@ -29,16 +24,32 @@ export class Book extends Component {
           };
 
         this.fetchStoryText = () => {
-            this.getStoryText()
+            this.props.getStoryText()
               .then(json => {
-                //console.log(json);
+                // console.log(json);
                 return(json);
               });
           };
-
     }
 
-
+    componentDidMount() {
+        this.fetchMarginNotes()
+        .then((result) => {
+                console.log(result);
+                this.setState({
+                isLoaded: true,
+                marginNotes: result
+              });
+            },
+            (error) => {
+              this.setState({
+                isLoaded: true,
+                error
+              });
+            }
+        )
+    }
+        
 
     render() {
 
@@ -52,8 +63,6 @@ export class Book extends Component {
             flexFlow: 'row'
 
         }
-
-
 
         return (
             <div style={bookStyle} className = "Book">

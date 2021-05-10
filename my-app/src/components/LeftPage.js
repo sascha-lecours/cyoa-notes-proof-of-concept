@@ -5,7 +5,7 @@ import { StoryTextArea } from './StoryTextArea.js';
 
 // the LEFT page primarily holds descriptive text and margin notes
 
-export const LeftPage = ({fetchStoryText, fetchMarginNotes}) => {
+export const LeftPage = (fetchStoryText, fetchMarginNotes) => {
 
 
     const leftPageStyle = {

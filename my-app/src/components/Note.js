@@ -1,11 +1,14 @@
-import React from 'react'
+import React from 'react';
+
+import { getMarginNotes } from '../services/MarginNotesService';
 
 export const MarginNotes = ({marginNotes}) => {
 
-    console.log('marginNotes length:::', marginNotes.length)
-    if (marginNotes.length === 0) return null
 
-    const MarginNoteRow = (key,user,text) => {
+    if (marginNotes.length === 0) return null;
+    console.log('marginNotes length:::', marginNotes.length);
+
+    const MarginNoteRow = ({key,user,text}) => {
 
         return(
             <li key={key}>
@@ -14,8 +17,7 @@ export const MarginNotes = ({marginNotes}) => {
           )
     }
 
-    // TODO: Display issue to be resolved here
-    const marginNotesList = marginNotes.map((key, user, text) => MarginNoteRow(key, user, text))
+    const marginNotesList = marginNotes.map((key, user, text) => MarginNoteRow(key, user, text));
 
     return(
         <div className="container">

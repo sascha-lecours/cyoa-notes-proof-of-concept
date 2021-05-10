@@ -13,8 +13,8 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Book } from './components/Book';
 
-import { getMarginNotes } from './services/GetMarginNotes';
-import { getStoryText } from './services/GetStoryText';
+import { getMarginNotes } from './services/MarginNotesService';
+import { getStoryText } from './services/StoryTextService';
 
 
 function App() {

@@ -13,7 +13,7 @@ inkle.start();
 let paragraphList = inkle.getText();
 let choicesList = inkle.getChoices();
 
-console.log(paragraphList);
+//console.log(paragraphList);
 
 // placeholder data
 const users = [
@@ -51,7 +51,7 @@ const marginNotesPlaceholder = [
     text: "Keep at it! Don't give up!"
   }
 
-]
+];
 
 // placeholders end
 
@@ -66,7 +66,6 @@ app.get('/api/storyText', (req, res) => {
 
 app.get('/api/marginNotes', (req, res) => {
   console.log('api/marginNotes called!')
-  console.log('returning ' + json(marginNotesPlaceholder));
   res.json(marginNotesPlaceholder);
 });
 

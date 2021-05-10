@@ -12,10 +12,10 @@ export class RightPage extends Component {
 
         const rightPageStyle = {
             width: '50%',
-            // 'max-width': '1000px',
+            // 'maxWidth': '1000px',
             padding: '2%',
             margin: '1%',
-            'margin-left': '0.25%',
+            'marginLeft': '0.25%',
             backgroundColor: myPalette[2]
         }
 

@@ -9,10 +9,6 @@ export class MarginArea extends Component {
             marginNotes: ['placeholder']
         }
     }
-
-    componentDidMount = () => {
-        this.props.marginNotes.then(json => this.setState({ marginNotes: json.marginNotes}));
-    }
     
     render(){
         const { marginNotes } = this.state;

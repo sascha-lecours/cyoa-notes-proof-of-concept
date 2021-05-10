@@ -15,7 +15,7 @@ export class StoryTextArea extends Component {
         }
 
         return (
-            <div style={storyTextAreaStyle}>
+            <div className="StoryTextArea" style={storyTextAreaStyle}>
                 <p>
                     This is a block of story text. 
                     

@@ -14,12 +14,13 @@ export class RightPage extends Component {
             width: '50%',
             // 'max-width': '1000px',
             padding: '2%',
-            margin: '2%',
+            margin: '1%',
+            'margin-left': '0.25%',
             backgroundColor: myPalette[2]
         }
 
         return (
-            <div style={rightPageStyle}>
+            <div style={rightPageStyle} className="RightPage">
                 <p>This is the content of the right page</p>
             </div>
         )

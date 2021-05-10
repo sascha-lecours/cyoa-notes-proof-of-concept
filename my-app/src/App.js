@@ -13,6 +13,9 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Book } from './components/Book';
 
+import { getMarginNotes } from './services/GetMarginNotes';
+import { getStoryText } from './services/GetStoryText';
+
 
 function App() {
 
@@ -95,7 +98,7 @@ function App() {
       <div className="App">
         <Header></Header>
         <div className="centralBody">
-          <Book></Book>
+          <Book getMarginNotes={getMarginNotes} getStoryText={getStoryText}></Book>
         </div>
         <Footer></Footer>
       </div>

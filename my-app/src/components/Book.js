@@ -3,11 +3,12 @@ import { LeftPage } from './LeftPage';
 import { RightPage } from './RightPage';
 
 import { myPalette } from './appearance/paletteConstants.js';
+import { MarginNotes } from './Note';
 
 
 export class Book extends Component {
 
-
+    const [marginNotes] = useState({})
 
     render() {
 
@@ -23,8 +24,8 @@ export class Book extends Component {
         }
 
         return (
-            <div style={bookStyle}>
-                <LeftPage />
+            <div style={bookStyle} className = "Book">
+                <LeftPage getMarginNotes={this.props.getMarginNotes} getStoryText={this.props.getStoryText}/>
                 <RightPage />
             </div>
         )

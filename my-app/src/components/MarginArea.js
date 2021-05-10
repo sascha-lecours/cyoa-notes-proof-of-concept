@@ -1,26 +1,29 @@
 import React, { Component } from 'react';
 import { myPalette } from './appearance/paletteConstants.js';
 
-
 export class MarginArea extends Component {
+    
+    constructor(props) {
+        super(props);
+        this.state = {
+            marginNotes: ['placeholder']
+        }
+    }
 
-
-
-    render() {
-
+    componentDidMount = () => {
+        this.props.marginNotes.then(json => this.setState({ marginNotes: json.marginNotes}));
+    }
+    
+    render(){
+        const { marginNotes } = this.state;
         const marginAreaStyle = {
             width: '35%',
             padding: '0.5%',
             color: myPalette[3]
         }
-
         return (
-            <div style={marginAreaStyle}>
-                <ul>
-                    <li>This is where margin notes might appear</li>
-                    <li>Lorem Ipsum Blabbity bloo?</li>
-                    <li>lololololololllll</li>
-                </ul>
+            <div className="Margin Area" style={marginAreaStyle}>
+                {marginNotes}
             </div>
         )
     }

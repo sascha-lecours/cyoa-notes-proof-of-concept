@@ -5,7 +5,7 @@ import { StoryTextArea } from './StoryTextArea.js';
 
 // the LEFT page primarily holds descriptive text and margin notes
 
-export const LeftPage = (fetchStoryText, fetchMarginNotes) => {
+export const LeftPage = ({marginNotes}, {storyText}) => {
 
 
     const leftPageStyle = {
@@ -18,24 +18,6 @@ export const LeftPage = (fetchStoryText, fetchMarginNotes) => {
         display: 'flex',
         flexFlow : 'row'
     }
-
-    const [marginNotes, setMarginNotes] = useState([
-        {
-          key: 1,
-          user: 'placeholder1',
-          text: 'Unloaded placeholder note 1'
-        },
-        {
-          key: 2,
-          user: 'placeholder2',
-          text: 'Unloaded placeholder note 2'
-        },
-        {
-          key: 3,
-          user: 'placeholder3',
-          text: 'Unloaded placeholder note 3'
-        }
-      ]);
 
 
     // Left area "MarginArea" for margin notes, right area "StoryTextArea" holds text and/or illustrations

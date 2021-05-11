@@ -9,8 +9,6 @@ export const MarginArea = ({marginNotes}) => {
             padding: '0.5%',
             color: myPalette[3]
         }
-        
-        console.log(marginNotes);
 
         return (
             <div className="Margin Area" style={marginAreaStyle}>

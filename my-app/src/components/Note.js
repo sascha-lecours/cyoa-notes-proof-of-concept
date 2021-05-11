@@ -5,26 +5,29 @@ import { getMarginNotes } from '../services/MarginNotesService';
 export const MarginNotes = ({marginNotes}) => {
 
 
-    if (marginNotes.length === 0) return null;
-    console.log('marginNotes length:::', marginNotes.length);
+    console.log('marginNotes length: ', marginNotes.length);
+    if (!marginNotes.length > 0) return null;
 
-    const MarginNoteRow = ({key,user,text}) => {
+
+    const MarginNoteRow = ({id,user,text}) => {
 
         return(
-            <li key={key}>
+            <li key={id}>
                 {text}
             </li>
           )
     }
 
-    const marginNotesList = marginNotes.map((key, user, text) => MarginNoteRow(key, user, text));
-
-    return(
-        <div className="container">
-            <h2>Marginalia</h2>
-            <ul>
-                {marginNotesList}
-            </ul>
-        </div>
-    )
+    const marginNotesList = (notes) => {
+        notes.map((id, user, text) => MarginNoteRow(id, user, text));
+    } 
+    
+        return(
+            <div className="container">
+                <h2>Marginalia</h2>
+                <ul>
+                    {marginNotesList(marginNotes)}
+                </ul>
+            </div>
+        )
 }

@@ -19,6 +19,19 @@ import { getStoryText } from './services/StoryTextService';
 
 function App() {
 
+  const [marginNotes, setMarginNotes] = useState([]);
+  const [storyText, setStoryText] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  
+  useEffect(() => {
+    getMarginNotes()
+      .then(notes => {
+        console.log(notes)
+        setMarginNotes(notes);
+      });
+  }, []);
+
 /*
   // Placeholders begin
   const [user, setUser] = useState({})
@@ -93,11 +106,12 @@ function App() {
         </div>
     );
     */
+
     return (
       <div className="App">
         <Header></Header>
         <div className="centralBody">
-          <Book getMarginNotes={getMarginNotes} getStoryText={getStoryText}></Book>
+          <Book marginNotes={marginNotes} getStoryText={storyText}></Book>
         </div>
         <Footer></Footer>
       </div>

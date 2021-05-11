@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const app = express(), port = 3080;
 
+
+// Inklewriter starts
 const fs = require('fs');
 const libinkle = require('libinkle');
 
@@ -12,8 +14,8 @@ console.log(inkle);
 inkle.start();
 let paragraphList = inkle.getText();
 let choicesList = inkle.getChoices();
+// Inklewriter ends
 
-//console.log(paragraphList);
 
 // placeholder data
 const users = [
@@ -36,21 +38,20 @@ const users = [
 
 const marginNotesPlaceholder = [
   {
-    key: 1,
+    id: 1,
     user: 'bob',
     text: 'Watch out for cats'
   },
   {
-    key: 2,
+    id: 2,
     user: 'Samwise31',
     text: 'This is going to be a difficult journey. Try tenacity.'
   },
   {
-    key: 3,
+    id: 3,
     user: 'Saimon',
     text: "Keep at it! Don't give up!"
   }
-
 ];
 
 // placeholders end

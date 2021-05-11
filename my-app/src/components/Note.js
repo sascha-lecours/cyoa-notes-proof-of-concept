@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { getMarginNotes } from '../services/MarginNotesService';
-
 export const MarginNotes = ({marginNotes}) => {
 
 
@@ -18,15 +16,14 @@ export const MarginNotes = ({marginNotes}) => {
           )
     }
 
-    const marginNotesList = (notes) => {
-        notes.map((id, user, text) => MarginNoteRow(id, user, text));
-    } 
+    const marginNotesList = marginNotes.map((id, user, text) => MarginNoteRow(id, user, text))
+
     
         return(
             <div className="container">
-                <h2>Marginalia</h2>
+                <h3>Marginalia:</h3>
                 <ul>
-                    {marginNotesList(marginNotes)}
+                    {marginNotesList}
                 </ul>
             </div>
         )

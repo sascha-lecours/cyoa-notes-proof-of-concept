@@ -1,29 +1,30 @@
 import React, { Component } from 'react';
 import { myPalette } from './appearance/paletteConstants.js';
+import { ChoiceArea } from './ChoiceArea.js';
 
 
 // The RIGHT page primarily holds interactable option boxes rather than descriptive text
 
-export class RightPage extends Component {
+export const RightPage = ({choices}) => {
 
 
-
-    render() {
-
-        const rightPageStyle = {
-            width: '50%',
-            // 'maxWidth': '1000px',
-            padding: '2%',
-            margin: '1%',
-            'marginLeft': '0.25%',
-            backgroundColor: myPalette[2]
-        }
-
-        return (
-            <div style={rightPageStyle} className="RightPage">
-                <p>This is the content of the right page</p>
-            </div>
-        )
+    const rightPageStyle = {
+        width: '50%',
+        // 'maxWidth': '1000px',
+        padding: '2%',
+        margin: '1%',
+        'marginLeft': '0.25%',
+        backgroundColor: myPalette[2]
     }
 
+
+    // List of choices (TODO: possibly also illustrations?)
+
+    return (
+        <div className="RightPage" style={rightPageStyle}>
+           <ChoiceArea choices={choices} />
+        </div>
+    );
 }
+
+

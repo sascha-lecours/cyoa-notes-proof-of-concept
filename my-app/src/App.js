@@ -13,22 +13,36 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Book } from './components/Book';
 
-import { getMarginNotes } from './services/MarginNotesService';
-import { getStoryText } from './services/StoryTextService';
+import { getMarginNotes } from './services/MarginNotesService.js';
+import { getStoryText } from './services/StoryTextService.js';
+import { getChoices } from './services/ChoiceService.js';
 
 
 function App() {
 
   const [marginNotes, setMarginNotes] = useState([]);
   const [storyText, setStoryText] = useState([]);
+  const [choices, setChoices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   
   useEffect(() => {
+    getStoryText()
+      .then(text =>{
+        //console.log(text);
+        setStoryText(text);
+      });
+
     getMarginNotes()
       .then(notes => {
-        console.log(notes)
+        //console.log(notes);
         setMarginNotes(notes);
+      });
+
+    getChoices()
+      .then(choices => {
+        console.log(choices);
+        setChoices(choices);
       });
   }, []);
 
@@ -111,7 +125,7 @@ function App() {
       <div className="App">
         <Header></Header>
         <div className="centralBody">
-          <Book marginNotes={marginNotes} getStoryText={storyText}></Book>
+          <Book marginNotes={marginNotes} storyText={storyText} choices={choices}></Book>
         </div>
         <Footer></Footer>
       </div>

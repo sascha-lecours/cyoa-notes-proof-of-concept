@@ -13,29 +13,12 @@ console.log(inkle);
 
 inkle.start();
 let paragraphList = inkle.getText();
-let choicesList = inkle.getChoices();
+let choices = inkle.getChoices();
+let choicesList = inkle.getChoicesByName();
 // Inklewriter ends
 
 
 // placeholder data
-const users = [
-  {
-    firstName: "first1",
-    lastName: "last1",
-    email: "abc@gmail.com"
-  },
-  {
-    firstName: "first2",
-    lastName: "last2",
-    email: "abc@gmail.com"
-  },
-  {
-    firstName: "first3",
-    lastName: "last3",
-    email: "abc@gmail.com"
-  }
-];
-
 const marginNotesPlaceholder = [
   {
     id: 1,
@@ -70,6 +53,13 @@ app.get('/api/marginNotes', (req, res) => {
   res.json(marginNotesPlaceholder);
 });
 
+app.get('/api/choices', (req, res) => {
+  console.log('api/choices called!')
+  res.json(choices);
+  res.json(choicesList);
+  //res.json(choicesList);
+});
+
 
 
 // -- Old functions:
@@ -89,6 +79,24 @@ app.post('/api/user', (req, res) => {
 app.get('/', (req,res) => {
   res.sendFile(path.join(__dirname, '../my-app/build/index.html'));
 });
+
+const users = [
+  {
+    firstName: "first1",
+    lastName: "last1",
+    email: "abc@gmail.com"
+  },
+  {
+    firstName: "first2",
+    lastName: "last2",
+    email: "abc@gmail.com"
+  },
+  {
+    firstName: "first3",
+    lastName: "last3",
+    email: "abc@gmail.com"
+  }
+];
 
 // -- Old functions end
 

@@ -5,29 +5,7 @@ import { RightPage } from './RightPage';
 import { myPalette } from './appearance/paletteConstants.js';
 
 
-//export const Book = (getMarginNotes, getStoryText) => {
-export const Book = ({marginNotes}, {storyText}) => {
-
-
-
-/*
-    const fetchMarginNotes = async () => {
-            getMarginNotes()
-              .then(json => {
-                console.log(json);
-                return(json);
-              });
-          };
-
-    const fetchStoryText = () => {
-            getStoryText()
-              .then(json => {
-                // console.log(json);
-                return(json);
-              });
-    }
-
-    */
+export const Book = ({marginNotes, storyText, choices}) => {
 
     const bookStyle = {
         width: '100%',
@@ -45,7 +23,7 @@ export const Book = ({marginNotes}, {storyText}) => {
     return (
             <div style={bookStyle} className = "Book">
                 <LeftPage marginNotes={marginNotes} storyText={storyText}/>
-                <RightPage />
+                <RightPage choices={choices}/>
             </div>
 
     )

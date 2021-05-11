@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
+import React, { Fragment } from 'react';
 import { myPalette } from './appearance/paletteConstants.js';
+import { addInkleWriterFormatting } from './InkleWriterFormatting.js';
 
-
-export class StoryTextArea extends Component {
-
-
-
-    render() {
+export const StoryTextArea = ({storyText}) => {
 
         const storyTextAreaStyle = {
             width: '70%',
@@ -14,19 +10,15 @@ export class StoryTextArea extends Component {
             color: myPalette[4]
         }
 
+        const formattedStoryText = addInkleWriterFormatting(storyText);
+
         return (
             <div className="StoryTextArea" style={storyTextAreaStyle}>
-                <p>
-                    This is a block of story text. 
-                    
-                    It could go on for quite a while.
-
-                    Who knows where it might stop? 
-
-                
-                </p>
+                <div>
+                    <Fragment>
+                        {formattedStoryText}
+                    </Fragment>
+                </div>
             </div>
         )
-    }
-
 }

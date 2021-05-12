@@ -5,7 +5,7 @@ import { RightPage } from './RightPage';
 import { myPalette } from './appearance/paletteConstants.js';
 
 
-export const Book = ({marginNotes, storyText, choices, choicesList}) => {
+export const Book = ({marginNotes, storyText, choices, choicesList, makeChoice}) => {
 
     const bookStyle = {
         width: '100%',
@@ -23,7 +23,7 @@ export const Book = ({marginNotes, storyText, choices, choicesList}) => {
     return (
             <div style={bookStyle} className = "Book">
                 <LeftPage marginNotes={marginNotes} storyText={storyText}/>
-                <RightPage choices={choices} choicesList={choicesList}/>
+                <RightPage choices={choices} choicesList={choicesList} makeChoice={makeChoice}/>
             </div>
 
     )

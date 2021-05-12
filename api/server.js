@@ -3,19 +3,29 @@ const path = require('path');
 const app = express(), port = 3080;
 
 
-// Inklewriter starts
+// Inklewriter initialization
 const fs = require('fs');
 const libinkle = require('libinkle');
 
 const buf = fs.readFileSync('testStory.json');
-const inkle = new libinkle({source: buf.toString()});
-console.log(inkle);
+let inkle = new libinkle({source: buf.toString()});
 
 inkle.start();
 let paragraphList = inkle.getText();
 let choices = inkle.getChoices();
 let choicesList = inkle.getChoicesByName();
-// Inklewriter ends
+
+const moveToNewStitch = () => {
+  paragraphList = inkle.getText();
+  choices = inkle.getChoices();
+  choicesList = inkle.getChoicesByName();
+}
+
+const resetStory = () => {
+  inkle = new libinkle({source: buf.toString()});
+  inkle.start();
+  moveToNewStitch();
+};
 
 
 // placeholder data
@@ -58,13 +68,24 @@ app.get('/api/choices', (req, res) => {
   res.json(choices);
 });
 
+app.get('/api/reset', (req, res) => {
+  resetStory();
+  console.log('Resetting story...');
+  res.json('Story reset.');
+});
 
 app.get('/api/choiceslist', (req, res) => {
   console.log('api/choiceslist called!')
   res.json(choicesList);
 });
 
-
+app.post('/api/makechoice', (req, res) => {
+    const destination = req.body.destination;
+    console.log('Making choice that leads to ', destination);
+    inkle.choose(inkle.getChoicesByName()[destination]);
+    moveToNewStitch();
+    res.json("Choice made.");
+  });
 
 
 // -- Old functions:

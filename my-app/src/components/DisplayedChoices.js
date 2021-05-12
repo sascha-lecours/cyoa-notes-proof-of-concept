@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
+import { myPalette } from './appearance/paletteConstants.js';
 
-export const DisplayedChoices = ({choices, choicesList}) => {
+export const DisplayedChoices = ({choices, choicesList, makeChoice}) => {
 
 
     console.log('choicesList length: ', choicesList.length);
@@ -9,7 +10,7 @@ export const DisplayedChoices = ({choices, choicesList}) => {
     const ChoiceRow = (choice, destination, index) => {
         return(
             <li key={index}>
-                {choice}
+                <button onClick={(e) => makeChoice(destination)}>{choice}</button>
             </li>
           )
     }
@@ -25,9 +26,16 @@ export const DisplayedChoices = ({choices, choicesList}) => {
         });
         return choiceRows;
     }
+
+    const displayedChoicesStyle = {
+        width: '100%',
+        minWidth: '150px',
+        padding: '0.5%',
+        color: myPalette[3]
+    }
     
         return(
-            <div className="container">
+            <div className="listOfChoices" style={displayedChoicesStyle}>
                 <h4>Choose: </h4>
                 <ul>
                     {displayedChoices(choices, choicesList)}

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { myPalette } from './appearance/paletteConstants.js';
 import { DisplayedChoices } from './DisplayedChoices.js';
 
-export const ChoiceArea = ({choices, choicesList}) => {
+export const ChoiceArea = ({choices, choicesList, makeChoice}) => {
 
         const ChoiceAreaStyle = {
             width: '70%',
@@ -12,7 +12,7 @@ export const ChoiceArea = ({choices, choicesList}) => {
 
         return (
             <div className="ChoiceArea" style={ChoiceAreaStyle}>
-                <DisplayedChoices choices={choices} choicesList={choicesList}/>
+                <DisplayedChoices choices={choices} choicesList={choicesList} makeChoice={makeChoice}/>
             </div>
         )
 }

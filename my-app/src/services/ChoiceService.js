@@ -20,3 +20,12 @@ export async function getChoicesList() {
     }
     
 }
+
+export async function makeChoice(destination) {
+    const response = await fetch(`/api/makechoice`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({destination})
+      })
+    return await response.json();
+}

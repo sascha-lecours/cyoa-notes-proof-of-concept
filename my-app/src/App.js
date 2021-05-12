@@ -14,8 +14,8 @@ import { Footer } from './components/Footer';
 import { Book } from './components/Book';
 
 import { getMarginNotes } from './services/MarginNotesService.js';
-import { getStoryText } from './services/StoryTextService.js';
-import { getChoices, getChoicesList } from './services/ChoiceService.js';
+import { getStoryText, resetStory } from './services/StoryService.js';
+import { getChoices, getChoicesList, makeChoice } from './services/ChoiceService.js';
 
 
 function App() {
@@ -24,10 +24,12 @@ function App() {
   const [storyText, setStoryText] = useState([]);
   const [choices, setChoices] = useState({});
   const [choicesList, setChoicesList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [needToUpdate, setNeedToUpdate] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
 
   
   useEffect(() => {
+    if(!needToUpdate) return;
     getStoryText()
       .then(text =>{
         //console.log(text);
@@ -52,7 +54,13 @@ function App() {
         setChoicesList(choicesList);
       });
 
-  }, []);
+      setNeedToUpdate(false);
+  }, [needToUpdate]);
+
+  const makeChoiceAndUpdate = (destination) => {
+    makeChoice(destination);
+    setNeedToUpdate(true);
+  }
 
 /*
   // Placeholders begin
@@ -98,7 +106,7 @@ function App() {
       }
       setUser(user)
   }
-  // Placeholders end
+
   
     return (
         <div className="App">
@@ -127,14 +135,30 @@ function App() {
           </div>
         </div>
     );
+
+// Placeholders end
     */
 
     return (
       <div className="App">
         <Header></Header>
         <div className="centralBody">
-          <Book marginNotes={marginNotes} storyText={storyText} choices={choices} choicesList={choicesList}></Book>
+          <Book 
+            marginNotes={marginNotes} 
+            storyText={storyText} 
+            choices={choices} 
+            choicesList={choicesList} 
+            makeChoice={makeChoiceAndUpdate}
+          ></Book>
         </div>
+
+        <div>
+          <button onClick={(e)=>{
+            resetStory();
+            setNeedToUpdate(true);
+            }}>Reset story</button>
+        </div>
+
         <Footer></Footer>
       </div>
   );

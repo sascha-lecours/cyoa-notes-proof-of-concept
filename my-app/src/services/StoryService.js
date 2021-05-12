@@ -9,3 +9,14 @@ export async function getStoryText() {
     }
     
 }
+
+export async function resetStory() {
+    
+    try{
+        const response = await fetch('/api/reset');
+        return await response.json();
+    } catch(error) {
+        return [];
+    }
+
+}

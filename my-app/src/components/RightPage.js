@@ -5,11 +5,11 @@ import { ChoiceArea } from './ChoiceArea.js';
 
 // The RIGHT page primarily holds interactable option boxes rather than descriptive text
 
-export const RightPage = ({choices}) => {
+export const RightPage = ({choices, choicesList}) => {
 
 
     const rightPageStyle = {
-        width: '50%',
+        width: '35%',
         // 'maxWidth': '1000px',
         padding: '2%',
         margin: '1%',
@@ -22,7 +22,7 @@ export const RightPage = ({choices}) => {
 
     return (
         <div className="RightPage" style={rightPageStyle}>
-           <ChoiceArea choices={choices} />
+           <ChoiceArea choices={choices} choicesList={choicesList} />
         </div>
     );
 }

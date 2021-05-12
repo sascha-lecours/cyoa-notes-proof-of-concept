@@ -21,7 +21,7 @@ export const MarginNotes = ({marginNotes}) => {
     
         return(
             <div className="container">
-                <h3>Marginalia:</h3>
+                <h5>Marginalia:</h5>
                 <ul>
                     {marginNotesList}
                 </ul>

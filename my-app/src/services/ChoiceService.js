@@ -9,3 +9,14 @@ export async function getChoices() {
     }
     
 }
+
+export async function getChoicesList() {
+
+    try{
+        const response = await fetch('/api/choiceslist');
+        return await response.json();
+    } catch(error) {
+        return [];
+    }
+    
+}

@@ -6,6 +6,7 @@ export const MarginArea = ({marginNotes}) => {
 
         const marginAreaStyle = {
             width: '35%',
+            minWidth: '150px',
             padding: '0.5%',
             color: myPalette[3]
         }

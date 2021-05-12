@@ -9,7 +9,7 @@ export const LeftPage = ({marginNotes, storyText}) => {
 
 
     const leftPageStyle = {
-        width: '50%',
+        width: '65%',
         //maxWidth: '1000px',
         padding: '15px',
         margin: '1%',

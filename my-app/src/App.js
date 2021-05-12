@@ -15,14 +15,15 @@ import { Book } from './components/Book';
 
 import { getMarginNotes } from './services/MarginNotesService.js';
 import { getStoryText } from './services/StoryTextService.js';
-import { getChoices } from './services/ChoiceService.js';
+import { getChoices, getChoicesList } from './services/ChoiceService.js';
 
 
 function App() {
 
   const [marginNotes, setMarginNotes] = useState([]);
   const [storyText, setStoryText] = useState([]);
-  const [choices, setChoices] = useState([]);
+  const [choices, setChoices] = useState({});
+  const [choicesList, setChoicesList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   
@@ -41,9 +42,16 @@ function App() {
 
     getChoices()
       .then(choices => {
-        console.log(choices);
+        //console.log(choices);
         setChoices(choices);
       });
+
+    getChoicesList()
+      .then(choicesList => {
+        //console.log(choicesList);
+        setChoicesList(choicesList);
+      });
+
   }, []);
 
 /*
@@ -125,7 +133,7 @@ function App() {
       <div className="App">
         <Header></Header>
         <div className="centralBody">
-          <Book marginNotes={marginNotes} storyText={storyText} choices={choices}></Book>
+          <Book marginNotes={marginNotes} storyText={storyText} choices={choices} choicesList={choicesList}></Book>
         </div>
         <Footer></Footer>
       </div>

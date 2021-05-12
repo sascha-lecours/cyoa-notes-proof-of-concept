@@ -56,9 +56,14 @@ app.get('/api/marginNotes', (req, res) => {
 app.get('/api/choices', (req, res) => {
   console.log('api/choices called!')
   res.json(choices);
-  res.json(choicesList);
-  //res.json(choicesList);
 });
+
+
+app.get('/api/choiceslist', (req, res) => {
+  console.log('api/choiceslist called!')
+  res.json(choicesList);
+});
+
 
 
 

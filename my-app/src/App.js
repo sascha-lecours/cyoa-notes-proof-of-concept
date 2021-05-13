@@ -25,8 +25,6 @@ function App() {
   const [choices, setChoices] = useState({});
   const [choicesList, setChoicesList] = useState([]);
   const [needToUpdate, setNeedToUpdate] = useState(true);
-  // const [isLoading, setIsLoading] = useState(true);
-
   
   useEffect(() => {
     if(!needToUpdate) return;

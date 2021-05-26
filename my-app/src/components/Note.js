@@ -3,7 +3,7 @@ import React from 'react';
 export const MarginNotes = ({marginNotes}) => {
 
 
-    console.log('marginNotes length: ', marginNotes.length);
+    // console.log('marginNotes length: ', marginNotes.length);
     if (!marginNotes.length > 0) return null;
 
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express(), port = 3080;
+const mongoHandler = require('./mongo');
 
 
 // Inklewriter initialization
@@ -28,6 +29,8 @@ const resetStory = () => {
 };
 
 
+
+
 // placeholder data
 const marginNotesPlaceholder = [
   {
@@ -50,8 +53,14 @@ const marginNotesPlaceholder = [
 // placeholders end
 
 
+// api paths
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../my-app/build')));
+
+app.post('/api/story', mongoHandler.createStory);
+
+app.get('/api/story', mongoHandler.getStories); 
 
 app.get('/api/storyText', (req, res) => {
   console.log('api/storyText called!')
@@ -125,6 +134,8 @@ const users = [
 ];
 
 // -- Old functions end
+
+// Start listening
 
 app.listen(port, () => {
     console.log(`Server listening on the port::${port}`);

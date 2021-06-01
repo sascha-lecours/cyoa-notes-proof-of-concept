@@ -1,3 +1,5 @@
+// A primitive first version of the Mongo interface - replaced by mongoose later on.
+
 const MongoClient = require('mongodb').MongoClient;
 
 const url = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';

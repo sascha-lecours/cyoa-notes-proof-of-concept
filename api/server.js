@@ -1,7 +1,10 @@
 const express = require('express');
 const path = require('path');
 const app = express(), port = 3080;
-const mongoHandler = require('./mongoose');
+const mongoose = require('mongoose');
+
+const connectionUrl = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
+//const mongoHandler = require('./mongoose');
 
 
 // Inklewriter initialization
@@ -58,9 +61,9 @@ const marginNotesPlaceholder = [
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../my-app/build')));
 
-app.post('/api/story', mongoHandler.createStory);
+//app.post('/api/story', mongoHandler.createStory);
 
-app.get('/api/story', mongoHandler.getStories); 
+//app.get('/api/story', mongoHandler.getStories); 
 
 app.get('/api/storyText', (req, res) => {
   console.log('api/storyText called!')
@@ -137,6 +140,14 @@ const users = [
 
 // Start listening
 
-app.listen(port, () => {
+mongoose
+.connect(connectionUrl)
+.then(()=>{
+  app.listen(port, () => {
     console.log(`Server listening on the port::${port}`);
+  });
+})
+.catch(error => {
+  console.log(error);
 });
+

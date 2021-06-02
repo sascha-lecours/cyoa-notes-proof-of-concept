@@ -16,11 +16,13 @@ const createStory = async (req, res, next) => {
         story: req.body.story
     });
     const result = await createdStory.save();
+    console.log("Created Story with ID: " + createdStory.id);
     res.json(result); // The entire story that was saved - fairly big.
 };
 
 const getStories = async (re, res, next) => { // Array of all stories. Extremely big.
     const stories = await Story.find().exec(); // Mongoose find() is array by default // exec() makes it a 'real' promise
+    
     res.json(stories);
 };
 

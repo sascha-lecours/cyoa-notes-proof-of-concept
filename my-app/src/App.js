@@ -14,7 +14,7 @@ import { Footer } from './components/Footer';
 import { Book } from './components/Book';
 
 import { getMarginNotes } from './services/MarginNotesService.js';
-import { getStoryText, resetStory } from './services/StoryService.js';
+import { getStoryText, resetStory, getCurrentStitch } from './services/StoryService.js';
 import { getChoices, getChoicesList, makeChoice } from './services/ChoiceService.js';
 
 
@@ -155,6 +155,10 @@ function App() {
             resetStory();
             setNeedToUpdate(true);
             }}>Reset story</button>
+            <button onClick={(e)=>{
+              getCurrentStitch();
+              setNeedToUpdate(true);
+            }}>Output Current Stitch</button>
         </div>
 
         <Footer></Footer>

@@ -20,3 +20,12 @@ export async function resetStory() {
     }
 
 }
+
+export async function getCurrentStitch() {
+    try{
+        const response = await fetch('/api/currentStitch');
+        return await response.json();
+    } catch(error) {
+        return [];
+    }
+}

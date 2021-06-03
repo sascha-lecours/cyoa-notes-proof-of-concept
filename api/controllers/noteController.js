@@ -48,7 +48,6 @@ const createNote = async (req, res, next) => {
 const getNotesByLocation = async (req, res, next) => {
     const storyName = req.body.location.story;
     const stitchName = req.body.location.stitch;
-    console.log(`looking for notes at stitch ${stitchName} in story ${storyName}...`);
     let fetchedNotes = [];
 
     try{

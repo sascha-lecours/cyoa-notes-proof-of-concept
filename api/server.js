@@ -19,11 +19,13 @@ inkle.start();
 let paragraphList = inkle.getText();
 let choices = inkle.getChoices();
 let choicesList = inkle.getChoicesByName();
+let currentStitch = inkle.getCurrentStitchName();
 
 const moveToNewStitch = () => {
   paragraphList = inkle.getText();
   choices = inkle.getChoices();
   choicesList = inkle.getChoicesByName();
+  currentStitch = inkle.getCurrentStitchName();
 }
 
 const resetStory = () => {
@@ -90,6 +92,11 @@ app.get('/api/reset', (req, res) => {
   resetStory();
   console.log('Resetting story...');
   res.json('Story reset.');
+});
+
+app.get('/api/currentStitch', (req, res) => {
+  console.log('Current stitch: ' + currentStitch);
+  res.json(currentStitch);
 });
 
 app.get('/api/choiceslist', (req, res) => {

@@ -4,7 +4,8 @@ const app = express(), port = 3080;
 const mongoose = require('mongoose');
 
 const connectionUrl = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
-//const mongoHandler = require('./mongoose');
+const storyHandler = require('./controllers/storyController');
+const noteHandler =  require('./controllers/noteController');
 
 
 // Inklewriter initialization
@@ -61,9 +62,14 @@ const marginNotesPlaceholder = [
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../my-app/build')));
 
-//app.post('/api/story', mongoHandler.createStory);
+app.post('/api/story', storyHandler.createStory);
+app.get('/api/story', storyHandler.getStories); 
+app.get('/api/note', noteHandler.getNoteById);
+app.get('/api/notes', noteHandler.getNotesByLocation);
 
-//app.get('/api/story', mongoHandler.getStories); 
+app.post('/api/note', noteHandler.createNote); 
+
+
 
 app.get('/api/storyText', (req, res) => {
   console.log('api/storyText called!')
@@ -90,6 +96,8 @@ app.get('/api/choiceslist', (req, res) => {
   console.log('api/choiceslist called!')
   res.json(choicesList);
 });
+
+
 
 app.post('/api/makechoice', (req, res) => {
     const destination = req.body.destination;
@@ -141,7 +149,7 @@ const users = [
 // Start listening
 
 mongoose
-.connect(connectionUrl)
+.connect(connectionUrl, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(()=>{
   app.listen(port, () => {
     console.log(`Server listening on the port::${port}`);

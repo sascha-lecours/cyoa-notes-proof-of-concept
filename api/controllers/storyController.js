@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
-const Story = require('./models/stories');
+const Story = require('../models/stories');
 
 const url = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
 
-mongoose.connect(url, { useUnifiedTopology: true }).then(()=>{
+mongoose.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }).then(()=>{
     console.log('Connected to database.');
 }).catch(()=>{
     console.log('Connection to database failed!');

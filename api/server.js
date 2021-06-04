@@ -4,16 +4,20 @@ const app = express(), port = 3080;
 const mongoose = require('mongoose');
 
 const connectionUrl = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
-const storyHandler = require('./controllers/storyController');
-const noteHandler =  require('./controllers/noteController');
+const notesRoutes = require('./routes/notes-routes');
 
+const storyHandler = require('./controllers/storyController');
+
+// Boolean to show debug features in app
+
+const showTools = true;
 
 // Inklewriter initialization
 const fs = require('fs');
 const libinkle = require('libinkle');
 
 const buf = fs.readFileSync('testStory.json');
-let inkle = new libinkle({source: buf.toString()});
+let inkle = new libinkle({ source: buf.toString() });
 
 inkle.start();
 let paragraphList = inkle.getText();
@@ -34,27 +38,9 @@ const resetStory = () => {
   moveToNewStitch();
 };
 
+// Placeholders
 
-
-
-// placeholder data
-const marginNotesPlaceholder = [
-  {
-    id: 1,
-    user: 'bob',
-    text: 'Watch out for cats'
-  },
-  {
-    id: 2,
-    user: 'Samwise31',
-    text: 'This is going to be a difficult journey. Try tenacity.'
-  },
-  {
-    id: 3,
-    user: 'Saimon',
-    text: "Keep at it! Don't give up!"
-  }
-];
+const placeHolderStoryTitle = "Hunt for M. Big Foot" // TODO: This is a placeholder until story IDs are finalized
 
 // placeholders end
 
@@ -64,13 +50,15 @@ const marginNotesPlaceholder = [
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../my-app/build')));
 
+app.use('/api/notes', notesRoutes);
+
+
 app.post('/api/story', storyHandler.createStory);
 app.get('/api/story', storyHandler.getStories); 
-app.get('/api/note', noteHandler.getNoteById);
-app.get('/api/notes', noteHandler.getNotesByLocation);
-
-app.post('/api/note', noteHandler.createNote); 
-
+app.get('/api/showDebugTools', (req, res) => {
+  console.log('Show debug tools: ' + showTools);
+  res.json(showTools);
+});
 
 
 app.get('/api/storyText', (req, res) => {
@@ -78,9 +66,9 @@ app.get('/api/storyText', (req, res) => {
   res.json(paragraphList);
 });
 
-app.get('/api/marginNotes', (req, res) => {
-  console.log('api/marginNotes called!')
-  res.json(marginNotesPlaceholder);
+
+app.get('/api/currentStoryName', (req, res) => {
+  res.json(placeHolderStoryTitle);
 });
 
 app.get('/api/choices', (req, res) => {
@@ -105,7 +93,6 @@ app.get('/api/choiceslist', (req, res) => {
 });
 
 
-
 app.post('/api/makechoice', (req, res) => {
     const destination = req.body.destination;
     console.log('Making choice that leads to ', destination);
@@ -113,45 +100,6 @@ app.post('/api/makechoice', (req, res) => {
     moveToNewStitch();
     res.json("Choice made.");
   });
-
-
-// -- Old functions:
-
-app.get('/api/users', (req, res) => {
-  console.log('api/users called!')
-  res.json(users);
-});
-
-app.post('/api/user', (req, res) => {
-  const user = req.body.user;
-  console.log('Adding user:::::', user);
-  users.push(user);
-  res.json("user added");
-});
-
-app.get('/', (req,res) => {
-  res.sendFile(path.join(__dirname, '../my-app/build/index.html'));
-});
-
-const users = [
-  {
-    firstName: "first1",
-    lastName: "last1",
-    email: "abc@gmail.com"
-  },
-  {
-    firstName: "first2",
-    lastName: "last2",
-    email: "abc@gmail.com"
-  },
-  {
-    firstName: "first3",
-    lastName: "last3",
-    email: "abc@gmail.com"
-  }
-];
-
-// -- Old functions end
 
 // Start listening
 

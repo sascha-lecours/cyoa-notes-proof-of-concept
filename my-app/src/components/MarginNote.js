@@ -2,21 +2,19 @@ import React from 'react';
 
 export const MarginNotes = ({marginNotes}) => {
 
-
-    // console.log('marginNotes length: ', marginNotes.length);
     if (!marginNotes.length > 0) return null;
 
 
-    const MarginNoteRow = ({id,user,text}) => {
-
+    const MarginNoteRow = (note) => {
+        const { content, id, score, image, creator } = note; 
         return(
-            <li key={id}>
-                {text}
+            <li key={id.id}>
+                {content}
             </li>
           )
     }
 
-    const marginNotesList = marginNotes.map((id, user, text) => MarginNoteRow(id, user, text))
+    const marginNotesList = marginNotes.map((note) => MarginNoteRow(note))
 
     
         return(

@@ -7,7 +7,6 @@ export async function getStoryText() {
     } catch(error) {
         return [];
     }
-    
 }
 
 export async function resetStory() {
@@ -19,6 +18,15 @@ export async function resetStory() {
         return [];
     }
 
+}
+
+export async function getCurrentStoryName() {
+    try{
+        const response = await fetch('/api/currentStoryName');
+        return await response.json();
+    } catch(error) {
+        return [];
+    }
 }
 
 export async function getCurrentStitch() {

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { myPalette } from './appearance/paletteConstants.js';
-import { MarginNotes } from './Note.js';
+import { MarginNotes } from './MarginNote.js';
 
-export const MarginArea = ({marginNotes}) => {
+// TODO: add note-leaving functionality here
+
+export const MarginArea = ({ marginNotes, currentStitch, currentStory }) => {
 
         const marginAreaStyle = {
             width: '35%',
@@ -14,6 +16,7 @@ export const MarginArea = ({marginNotes}) => {
         return (
             <div className="Margin Area" style={marginAreaStyle}>
                 <MarginNotes marginNotes={marginNotes} />
+                <button className="btn btn-outline-primary">Leave a Note Here</button>
             </div>
         )
 }

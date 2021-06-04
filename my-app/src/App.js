@@ -2,23 +2,20 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-// Placeholders, to be removed
-import { Users } from './components/oldComponents/Users'
-import { DisplayBoard } from './components/oldComponents/DisplayBoard'
-import CreateUser from './components/oldComponents/CreateUser'
-import { getAllUsers, createUser } from './services/UserService'
-// placeholders end
-
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Book } from './components/Book';
 
-import { getMarginNotes } from './services/MarginNotesService.js';
-import { getStoryText, resetStory, getCurrentStitch } from './services/StoryService.js';
+import { getDebugSettings } from './services/AppSettingsService';
+import { getMarginNotes } from './services/NotesService.js';
+import { getStoryText, resetStory, getCurrentStitch, getCurrentStoryName } from './services/StoryService.js';
 import { getChoices, getChoicesList, makeChoice } from './services/ChoiceService.js';
 
 
 function App() {
+
+  const [currentStoryTitle, setCurrentStoryTitle] = useState(null);
+  const [currentStitchName, setCurrentStitchName] = useState(null);
 
   const [marginNotes, setMarginNotes] = useState([]);
   const [storyText, setStoryText] = useState([]);
@@ -26,18 +23,37 @@ function App() {
   const [choicesList, setChoicesList] = useState([]);
   const [needToUpdate, setNeedToUpdate] = useState(true);
   
+  const [showDebugTools, setShowDebugTools] = useState(false);
+  
   useEffect(() => {
+    getCurrentStoryName()
+    .then(storyTitle => setCurrentStoryTitle(storyTitle))
+  }, []);
+  
+  useEffect(() => { //TODO: Break these out more finely when the time comes rather than updating all of them every time
     if(!needToUpdate) return;
+
+    getCurrentStitch()
+    .then(stitchName => setCurrentStitchName(stitchName));
+
+    if(currentStoryTitle && currentStitchName){
+      const currentLocation = { location: { story: currentStoryTitle, stitch: currentStitchName }}
+      console.log(`retieving notes from ${currentStoryTitle}, stitch: ${currentStitchName}`);
+      getMarginNotes(currentLocation)
+      .then(notes => {
+        setMarginNotes(notes);
+      });
+    }
+
+    if(!showDebugTools) { 
+      getDebugSettings()
+      .then(showDebugTools => setShowDebugTools(showDebugTools));
+    }
+
     getStoryText()
       .then(text =>{
         //console.log(text);
         setStoryText(text);
-      });
-
-    getMarginNotes()
-      .then(notes => {
-        //console.log(notes);
-        setMarginNotes(notes);
       });
 
     getChoices()
@@ -60,86 +76,32 @@ function App() {
     setNeedToUpdate(true);
   }
 
-/*
-  // Placeholders begin
-  const [user, setUser] = useState({})
-  const [users, setUsers] = useState([])
-  const [numberOfUsers, setNumberOfUsers] = useState(0)
+
+// Debugging tools:
+const ResetButton = () => {
+  return(
+    <button type="button" className="btn btn-secondary" onClick={(e)=>{
+      resetStory();
+      setNeedToUpdate(true);
+    }}>Reset story</button>
+  );
+}
+
+const GetCurrentStitchButton = () => {
+  return (
+    <button type="button" className="btn btn-info"onClick={(e)=>{
+      getCurrentStitch();
+      setNeedToUpdate(true);
+    }}>Output Current Stitch</button>
+  );
+}
 
 
-  const userCreate = (e) => {
-
-      createUser(user)
-        .then(response => {
-          console.log(response);
-          setNumberOfUsers(numberOfUsers+1)
-      });
-  }
-
-  const fetchAllUsers = () => {
-    getAllUsers()
-      .then(users => {
-        console.log(users)
-        setUsers(users);
-        setNumberOfUsers(users.length)
-      });
-  }
-
-  useEffect(() => {
-    getAllUsers()
-      .then(users => {
-        console.log(users)
-        setUsers(users);
-        setNumberOfUsers(users.length)
-      });
-  }, [])
-
-  const onChangeForm = (e) => {
-      if (e.target.name === 'firstname') {
-          user.firstName = e.target.value;
-      } else if (e.target.name === 'lastname') {
-          user.lastName = e.target.value;
-      } else if (e.target.name === 'email') {
-          user.email = e.target.value;
-      }
-      setUser(user)
-  }
-
-  
-    return (
-        <div className="App">
-          <Header></Header>
-          <div className="container mrgnbtm">
-            <div className="row">
-              <div className="col-md-8">
-                  <CreateUser 
-                    user={user}
-                    onChangeForm={onChangeForm}
-                    createUser={userCreate}
-                    >
-                  </CreateUser>
-              </div>
-              <div className="col-md-4">
-                  <DisplayBoard
-                    numberOfUsers={numberOfUsers}
-                    getAllUsers={fetchAllUsers}
-                  >
-                  </DisplayBoard>
-              </div>
-            </div>
-          </div>
-          <div className="row mrgnbtm">
-            <Users users={users}></Users>
-          </div>
-        </div>
-    );
-
-// Placeholders end
-    */
+// Debugging tools end.
 
     return (
       <div className="App">
-        <Header></Header>
+        <Header />
         <div className="centralBody">
           <Book 
             marginNotes={marginNotes} 
@@ -147,21 +109,17 @@ function App() {
             choices={choices} 
             choicesList={choicesList} 
             makeChoice={makeChoiceAndUpdate}
+            currentStitch={currentStitchName}
+            currentStory={currentStoryTitle}
           ></Book>
         </div>
 
         <div>
-          <button onClick={(e)=>{
-            resetStory();
-            setNeedToUpdate(true);
-            }}>Reset story</button>
-            <button onClick={(e)=>{
-              getCurrentStitch();
-              setNeedToUpdate(true);
-            }}>Output Current Stitch</button>
+          { showDebugTools ? <ResetButton /> : null }
+          { showDebugTools ? <GetCurrentStitchButton /> : null }
         </div>
 
-        <Footer></Footer>
+        <Footer />
       </div>
   );
 }

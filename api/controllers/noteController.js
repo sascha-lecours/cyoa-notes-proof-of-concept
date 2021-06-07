@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator');
 const Note = require('../models/note');
 const HttpError = require('../models/httpError');
+const mongoose = require('mongoose');
 
 /*
 const noteSchema = new Schema({
@@ -47,27 +48,25 @@ const createNote = async (req, res, next) => {
 
 
 const getNotesByLocation = async (req, res, next) => {
-    console.log(`get notes request body : ${JSON.stringify(req.body.location)}`);
+    console.log(`get notes request body : ${JSON.stringify(req.body)}`);
     const storyName = req.body.location.story;
     const stitchName = req.body.location.stitch;
+    
     let fetchedNotes = [];
-
     try{
         fetchedNotes = await Note.find({ 
             location:{
                 story: storyName,
                 stitch: stitchName
         }
-    }).exec();
+    })
     } catch (err) {
         const error = new HttpError(
             'Error when attempting to find notes at location', 500
         );
         return next(error);
     }
-
-
-    res.json( {fetchedNotes: fetchedNotes.map(note => note.toObject({ getters: true })) });
+    res.status(200).json({ fetchedNotes: fetchedNotes.map(note => note.toObject({ getters: true })) });
 }
 
 const getNoteById = async (req, res, next) => {

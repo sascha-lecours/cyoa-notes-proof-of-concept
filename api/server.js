@@ -2,24 +2,105 @@ const express = require('express');
 const path = require('path');
 const app = express(), port = 3080;
 const mongoose = require('mongoose');
-
+const HttpError = require('./models/httpError');
 const connectionUrl = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
+const storyHandler = require('./controllers/storyController');
 const notesRoutes = require('./routes/notes-routes');
 
-const storyHandler = require('./controllers/storyController');
-
-// Boolean to show debug features in app
-
-const showTools = true;
 
 // Inklewriter initialization
 const fs = require('fs');
 const libinkle = require('libinkle');
 
+
+// Boolean to show debug features in app
+
+const showTools = true;
+
+
+
+
+/// ---- Experimental session array approach
+
+let storySessions = [];
+
+// Example storysession format:
+/*
+  {
+    "userid": "user123",
+    "storymodel" : inkle, // This part will be a libinkle object
+    "paragraphList" : [some paragraphs],
+    "choices" : [choices],
+    "choicesList" : [choices by name],
+    "currentStitch" : "someStichName"
+  }
+*/
+
+const createStorySession = (userID, storyText) => {
+  let workingStorySession;
+
+  const newInkle = new libinkle({ source: storyText });
+  newInkle.start();
+
+  const newParagraphList = newInkle.getText();
+  const newChoices = newInkle.getChoices();
+  const newChoicesList = newInkle.getChoicesByName();
+  const newCurrentStitch = newInkle.getCurrentStitchName();
+
+  workingStorySession = {
+    "userid": userID,
+    "storymodel" : newInkle, 
+    "paragraphList" : newParagraphList,
+    "choices" : newChoices,
+    "choicesList" : newChoicesList,
+    "currentStitch" : newCurrentStitch
+  }
+
+  return workingStorySession;
+}
+
+const getStorySession = (userID) => {
+  const result = storySessions.filter((storySession) => { return storySession.userid === userID});
+  return result[0]; // Presumed to be unique 
+};
+
+const moveStorySessionToNewStitch = (userID, destination) => {
+  console.log(userID, ' is making choice that leads to ', destination);
+  const myInkle = getStorySession(userID).storymodel;
+  myInkle.choose(myInkle.getChoicesByName()[destination]);
+  const newParagraphList = myInkle.getText();
+  const newChoices = myInkle.getChoices();
+  const newChoicesList = myInkle.getChoicesByName();
+  const newCurrentStitch = myInkle.getCurrentStitchName();
+
+  const modifiedStorySession = {
+    "userid": userID,
+    "storymodel" : myInkle, 
+    "paragraphList" : newParagraphList,
+    "choices" : newChoices,
+    "choicesList" : newChoicesList,
+    "currentStitch" : newCurrentStitch
+  }
+
+  storySessions.forEach((storySession, i) => { // Update the value in storysessions
+    if(storySession.userid === userID) storySessions[i] = modifiedStorySession;
+  });
+}
+
+// Placeholder session array initialization
+const testBuf = fs.readFileSync('testStory.json');
+
+const testSession = createStorySession("testuser", testBuf.toString());
+storySessions.push(testSession);
+
+/// ---- Session array approach ends
+
+
+// Basic inkle initialization and single-story functions:
 const buf = fs.readFileSync('testStory.json');
 let inkle = new libinkle({ source: buf.toString() });
-
 inkle.start();
+
 let paragraphList = inkle.getText();
 let choices = inkle.getChoices();
 let choicesList = inkle.getChoicesByName();
@@ -31,6 +112,7 @@ const moveToNewStitch = () => {
   choicesList = inkle.getChoicesByName();
   currentStitch = inkle.getCurrentStitchName();
 }
+
 
 const resetStory = () => {
   inkle = new libinkle({source: buf.toString()});
@@ -50,6 +132,7 @@ const placeHolderStoryTitle = "Hunt for M. Big Foot" // TODO: This is a placehol
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../my-app/build')));
 
+
 app.use('/api/notes', notesRoutes);
 
 
@@ -59,7 +142,6 @@ app.get('/api/showDebugTools', (req, res) => {
   console.log('Show debug tools: ' + showTools);
   res.json(showTools);
 });
-
 
 app.get('/api/storyText', (req, res) => {
   console.log('api/storyText called!')
@@ -89,6 +171,7 @@ app.get('/api/currentStitch', (req, res) => {
 
 app.get('/api/choiceslist', (req, res) => {
   console.log('api/choiceslist called!')
+
   res.json(choicesList);
 });
 

@@ -8,7 +8,7 @@ export const MarginNotes = ({marginNotes}) => {
     const MarginNoteRow = (note) => {
         const { content, id, score, image, creator } = note; 
         return(
-            <li key={id.id}>
+            <li key={id}>
                 {content}
             </li>
           )

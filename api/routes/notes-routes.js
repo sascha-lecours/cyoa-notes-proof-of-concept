@@ -1,11 +1,14 @@
 const express = require('express');
 const { check } = require('express-validator');
-const noteController = require('../controllers/noteController');
 
+const noteController = require('../controllers/noteController');
 const router = express.Router();
 
+
+
 router.get('/id/:nid', noteController.getNoteById);
-router.get('/location', noteController.getNotesByLocation);
+
+router.post('/location', noteController.getNotesByLocation);
 
 
 router.post( // TODO: add validation

@@ -38,10 +38,13 @@ function App() {
 
     if(currentStoryTitle && currentStitchName){
       const currentLocation = { location: { story: currentStoryTitle, stitch: currentStitchName }}
-      console.log(`retieving notes from ${currentStoryTitle}, stitch: ${currentStitchName}`);
+      //console.log(`retieving notes from ${currentStoryTitle}, stitch: ${currentStitchName}`);
+      //console.log(`... sending the following to getMarginNotes: ${JSON.stringify(currentLocation)}`);
       getMarginNotes(currentLocation)
-      .then(notes => {
-        setMarginNotes(notes);
+      .then(fetchedNotes => {
+        //console.log(`...Fetched these notes back: ${JSON.stringify(fetchedNotes)}`);
+        const newNotes = fetchedNotes.fetchedNotes;
+        setMarginNotes(newNotes);
       });
     }
 

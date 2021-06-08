@@ -35,7 +35,7 @@ let storySessions = [];
     "currentStitch" : "someStichName"
   }
 */
-
+/*
 const createStorySession = (userID, storyText) => {
   let workingStorySession;
 
@@ -87,6 +87,7 @@ const moveStorySessionToNewStitch = (userID, destination) => {
   });
 }
 
+
 // Placeholder session array initialization
 const testBuf = fs.readFileSync('testStory.json');
 
@@ -94,7 +95,7 @@ const testSession = createStorySession("testuser", testBuf.toString());
 storySessions.push(testSession);
 
 /// ---- Session array approach ends
-
+*/
 
 // Basic inkle initialization and single-story functions:
 const buf = fs.readFileSync('testStory.json');
@@ -111,6 +112,7 @@ const moveToNewStitch = () => {
   choices = inkle.getChoices();
   choicesList = inkle.getChoicesByName();
   currentStitch = inkle.getCurrentStitchName();
+  //console.log(inkle);
 }
 
 

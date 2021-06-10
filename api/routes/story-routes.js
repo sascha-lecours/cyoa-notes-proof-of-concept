@@ -11,6 +11,10 @@ router.post('/name', storyController.getStoryByName);
 router.post('/', storyController.createStory);
 router.get('/', storyController.getStories);
 
+router.post('/session/start', storyController.startStorySession);
+
+
+
 /* // Still TODO
 router.patch
 router.delete

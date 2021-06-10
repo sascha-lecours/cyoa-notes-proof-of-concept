@@ -9,7 +9,6 @@ const storyHandler = require('./controllers/storyController'); // TODO: remove
 const notesRoutes = require('./routes/notes-routes');
 const userRoutes = require('./routes/user-routes');
 const storyRoutes = require('./routes/story-routes');
-const storySessionRoutes = require('./routes/storySession-routes');
 
 
 // Inklewriter initialization
@@ -61,7 +60,6 @@ app.use(express.static(path.join(__dirname, '../my-app/build')));
 app.use('/api/notes', notesRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/story', storyRoutes);
-app.use('/api/storySession', storySessionRoutes);
 
 
 app.post('/api/story', storyHandler.createStory);

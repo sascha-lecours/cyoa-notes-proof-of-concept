@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const Story = require('../models/stories');
+const StorySession = require('../models/storySession');
 
 const url = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
 
@@ -49,7 +50,22 @@ const getInitialStitchByName = async (req, res, next) => {
     // Initial stitch is stored in: story.story.data.initial
 }
 
+// From a POST: Loads a "blank" run of the story and saves it to the database
+const startStorySession = async (req, res, next) => {
+    let newStorySession = new StorySession({
+        userName: req.body.userId,
+        storyName: req.body.storyName 
+        // Not yet creating flaglist and active stitch
+    });
+    const result = await newStorySession.save();
+    console.log("Created StorySession for user " + newStorySession.userName + " playing story " + newStorySession.storyName);
+    res.json(result);
+}
+
+
+
 exports.getInitialStitchByName = getInitialStitchByName;
 exports.getStoryByName = getStoryByName;
 exports.createStory = createStory;
 exports.getStories = getStories;
+exports.startStorySession = startStorySession;

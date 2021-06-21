@@ -11,6 +11,8 @@ const noteSchema = new Schema({
     content: { type: String, required: true },
     score: { type: Number, required: true },
     image: { type: String, required: false } // Could take a URL to an image, theoretically.
-});
+},
+{ timestamps: true }
+);
 
 module.exports = mongoose.model('Note', noteSchema);

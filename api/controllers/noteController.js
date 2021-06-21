@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const Note = require('../models/note');
+const NoteService = require('../services/noteService');
 const HttpError = require('../models/httpError');
 const mongoose = require('mongoose');
 
@@ -33,29 +34,6 @@ const createNote = async (req, res, next) => {
     res.status(201).json({ note: createdNote });
 }
 
-
-const getNotesByLocation = async (req, res, next) => {
-    console.log(`get notes request body : ${JSON.stringify(req.body)}`);
-    const storyName = req.body.location.story;
-    const stitchName = req.body.location.stitch;
-    
-    let fetchedNotes = [];
-    try{
-        fetchedNotes = await Note.find({ 
-            location:{
-                story: storyName,
-                stitch: stitchName
-        }
-    })
-    } catch (err) {
-        const error = new HttpError(
-            'Error when attempting to find notes at location', 500
-        );
-        return next(error);
-    }
-    res.status(200).json({ fetchedNotes: fetchedNotes.map(note => note.toObject({ getters: true })) });
-}
-
 const getNoteById = async (req, res, next) => {
     const noteId = req.params.nid;
     let note; 
@@ -74,6 +52,12 @@ const getNoteById = async (req, res, next) => {
         return next(error);
     }
     res.json({ note: note.toObject({ getters: true }) }); // "Getters" being true adds "id" property, not just the underscore-prefixed ID in DB.
+}
+
+const getNotesByLocation = async (req, res, next) => {
+    const fetchedNotes = await NoteService.getNotesByLocation(req.body.location);
+    res.status(200).json( fetchedNotes );
+
 }
 
 const updateNote = async (req, res, next) => {

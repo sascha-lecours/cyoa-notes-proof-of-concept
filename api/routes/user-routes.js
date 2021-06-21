@@ -5,6 +5,7 @@ const userController = require('../controllers/userController');
 const router = express.Router();
 
 
+// TODO: make these point to services instead
 
 router.get('/id/:uid', userController.getUserById);
 

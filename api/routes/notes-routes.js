@@ -4,6 +4,8 @@ const { check } = require('express-validator');
 const noteController = require('../controllers/noteController');
 const router = express.Router();
 
+// TODO: make these point to services instead
+
 
 
 router.get('/id/:nid', noteController.getNoteById);

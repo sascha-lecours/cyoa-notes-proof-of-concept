@@ -4,7 +4,6 @@ const app = express(), port = 3080;
 const mongoose = require('mongoose');
 const HttpError = require('./models/httpError');
 const connectionUrl = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
-const storyHandler = require('./controllers/storyController'); // TODO: remove
 
 const notesRoutes = require('./routes/notes-routes');
 const userRoutes = require('./routes/user-routes');
@@ -20,10 +19,13 @@ const libinkle = require('libinkle');
 
 const showTools = true;
 
+const testFlagList = [ 'saw mpsafd briefing', 'checked cra info', 'know waterloo' ]; // To be passed in for testing of preset flags
 
 // Basic inkle initialization and single-story functions:
 const buf = fs.readFileSync('testStory.json');
 let inkle = new libinkle({ source: buf.toString() });
+
+// This variant starts at the default stitch, with preset list of flags: inkle.start(null, testFlagList);
 inkle.start();
 
 let paragraphList = inkle.getText();
@@ -51,6 +53,7 @@ const placeHolderStoryTitle = "Hunt for M. Big Foot"; // TODO: This is a placeho
 // placeholders end
 
 
+
 // api paths
 
 app.use(express.json());
@@ -61,9 +64,17 @@ app.use('/api/notes', notesRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/story', storyRoutes);
 
+app.get('/api/currentStitch', (req, res) => {
+  console.log('Current stitch: ' + currentStitch);
+  res.json(currentStitch);
+});
 
-app.post('/api/story', storyHandler.createStory);
-app.get('/api/story', storyHandler.getStories); 
+app.get('/api/choiceslist', (req, res) => {
+  console.log('api/choiceslist called!')
+
+  res.json(choicesList);
+});
+
 
 app.get('/api/showDebugTools', (req, res) => {
   console.log('Show debug tools: ' + showTools);
@@ -91,16 +102,7 @@ app.get('/api/reset', (req, res) => {
   res.json('Story reset.');
 });
 
-app.get('/api/currentStitch', (req, res) => {
-  console.log('Current stitch: ' + currentStitch);
-  res.json(currentStitch);
-});
 
-app.get('/api/choiceslist', (req, res) => {
-  console.log('api/choiceslist called!')
-
-  res.json(choicesList);
-});
 
 
 app.post('/api/makechoice', (req, res) => {

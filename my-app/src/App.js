@@ -95,7 +95,7 @@ const GetCurrentStitchButton = () => {
     <button type="button" className="btn btn-info"onClick={(e)=>{
       getCurrentStitch();
       setNeedToUpdate(true);
-    }}>Output Current Stitch</button>
+    }}>Update notes</button>
   );
 }
 

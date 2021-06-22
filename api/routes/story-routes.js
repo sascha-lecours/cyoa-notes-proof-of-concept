@@ -14,6 +14,8 @@ router.post('/name', storyController.getStoryByName);
 router.post('/session/start', storyController.startStorySession);
 router.post('/session/names', storyController.getStorySessionByNames);
 
+router.post('/session/move', storyController.moveStorySession);
+
 /* // Still TODO
 router.patch
 router.delete

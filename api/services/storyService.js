@@ -17,4 +17,22 @@ const getStoryByName = async (name) => {
     return await { fetchedStory };
 }
 
+const getRawStoryTextByName = async (name) => {
+    console.log(`geting RAW story text for : ${name}`);
+    
+    let fetchedStory = {};
+    try{
+        fetchedStoryArray = await Stories.find({ name });
+        fetchedStory =  JSON.stringify(fetchedStoryArray[0].story);
+    } catch (err) {
+        const error = new HttpError(
+            'Error when attempting to get raw story text story by name', 500
+        );
+        return error;
+    } 
+
+    return await fetchedStory;
+}
+
 exports.getStoryByName = getStoryByName;
+exports.getRawStoryTextByName = getRawStoryTextByName;

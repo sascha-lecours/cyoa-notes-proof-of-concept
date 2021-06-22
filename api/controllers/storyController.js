@@ -91,15 +91,19 @@ const moveStorySession = async (req, res, next) => {
     const storyName = req.body.storyName;
     const destinationStitch = req.body.destinationStitch;
 
-    const rawStoryText = await StoryService.getStoryByName(storyName);
+    const rawStoryText = await StoryService.getRawStoryTextByName(storyName);
     
+    // TODO: Should this also create a new session if one doesn't already exist?
     const fullSession = await StorySessionService.getStorySessionByNames(userName, storyName);
-    const sessionFlagList = fullSession.sessionFlagList;
-    // const testFlagList = [ 'saw mpsafd briefing', 'checked cra info', 'know waterloo' ]; // To be passed in for testing of preset flags
+    const sessionFlagList = await fullSession.sessionFlaglist;
 
     // Inklewriter initialization
-    let inkle = new libinkle({ source: rawStoryText.toString() });
-    inkle.start(destinationStitch, sessionFlagList);
+    let inkle = new libinkle({ source: rawStoryText });
+
+    //Debug:
+    console.log('starting new inkle at stitch: ' + destinationStitch + ' with flaglist: ' + sessionFlagList);
+    
+    inkle.start(destinationStitch, sessionFlagList); // TODO: Why isn't it going to the destinationStitch?
 
     // It will then get all the story text, choices etc. for its new destination
     const paragraphList = inkle.getText();
@@ -109,12 +113,26 @@ const moveStorySession = async (req, res, next) => {
 
     // and then fetch the notes for its new location:
     const location = {
-        location: {story: storyName, stitch: currentStitch}
+        location: { story: storyName, stitch: currentStitch }
     }
+
     const fetchedNotes = await NoteService.getNotesByLocation(location);
-    // It will update the story session matching this ID/story combination to have the new flaglist
+    
+    // TODO: It will update the story session matching this ID/story combination to have the new flaglist
+    // (Code to update story session will go here)
+
+
     // And finally it will send back the frontend object that corresponds to the story info and notes for this destination.
     let frontEndObject;
+
+    // Populate frontEndObject with all the notes and story details needed
+    frontEndObject = {
+        paragraphList: paragraphList,
+        choices: choices,
+        choicesList: choicesList,
+        fetchedNotes: fetchedNotes
+    }
+
     res.json(frontEndObject);
 }
 

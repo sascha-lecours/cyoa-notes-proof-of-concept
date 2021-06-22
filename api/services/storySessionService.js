@@ -4,7 +4,7 @@ const HttpError = require('../models/httpError');
 const getStorySessionByNames = async (userName, storyName) => {
     console.log(`get session values for : ${userName}'s session of ${storyName}`);
     
-    let fetchedSession = {};
+    let fetchedSession;
     try{
         fetchedSession = await StorySession.find({ userName, storyName });
     } catch (err) {
@@ -13,8 +13,8 @@ const getStorySessionByNames = async (userName, storyName) => {
         );
         return error;
     }
-
-    return await { fetchedSession };
+    console.log("flaglist for this session is: " + fetchedSession[0].sessionFlaglist);
+    return await fetchedSession[0];
 }
 
 exports.getStorySessionByNames = getStorySessionByNames;

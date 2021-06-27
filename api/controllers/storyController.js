@@ -96,6 +96,7 @@ const moveStorySession = async (req, res, next) => {
     // TODO: Should this also create a new session if one doesn't already exist?
     const fullSession = await StorySessionService.getStorySessionByNames(userName, storyName);
     const sessionFlagList = await fullSession.sessionFlaglist;
+    const sessionId = await fullSession._id;
 
     // Inklewriter initialization
     let inkle = new libinkle({ source: rawStoryText });
@@ -103,13 +104,14 @@ const moveStorySession = async (req, res, next) => {
     //Debug:
     console.log('starting new inkle at stitch: ' + destinationStitch + ' with flaglist: ' + sessionFlagList);
     
-    inkle.start(destinationStitch, sessionFlagList); // TODO: Why isn't it going to the destinationStitch?
+    inkle.start(destinationStitch, sessionFlagList);
 
     // It will then get all the story text, choices etc. for its new destination
     const paragraphList = inkle.getText();
     const choices = inkle.getChoices();
     const choicesList = inkle.getChoicesByName();
     const currentStitch = inkle.getCurrentStitchName(); // This may need to be made async so that this happens in the correct order
+    const newFlagList = inkle.getFlagList();
 
     // and then fetch the notes for its new location:
     const location = {
@@ -119,7 +121,8 @@ const moveStorySession = async (req, res, next) => {
     const fetchedNotes = await NoteService.getNotesByLocation(location);
     
     // TODO: It will update the story session matching this ID/story combination to have the new flaglist
-    // (Code to update story session will go here)
+    const sessionPayload = { currentStitch}
+    const updatedSession = await StorySessionService.updateStorySessionById(sessionId, sessionPayload);
 
 
     // And finally it will send back the frontend object that corresponds to the story info and notes for this destination.
@@ -143,6 +146,6 @@ exports.getStoryByName = getStoryByName;
 exports.createStory = createStory;
 exports.getStories = getStories;
 exports.startStorySession = startStorySession;
-exports.getStoryFrontEndObject = getStoryFrontEndObject; // TODO: this might need to instead be a service?
+exports.getStoryFrontEndObject = getStoryFrontEndObject; // TODO: this might need to instead be a service? (evaluate need for this to be used in other controllers)
 exports.getStorySessionByNames = getStorySessionByNames;
 exports.moveStorySession = moveStorySession;

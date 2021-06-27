@@ -17,9 +17,9 @@ const getStorySessionByNames = async (userName, storyName) => {
     return await fetchedSession[0];
 }
 
-// payload: sessionFlagList, sessionLastActiveStitch, //TODO: maybe a boolean for story completed -> remove session?
+// payload: newFlagList, currenStitch, //TODO: maybe a boolean for story completed -> remove session?
 const updateStorySessionById = async (id, payload) => {
-    console.log(`Update session for ID: ${id}`);
+    console.log(`Update session for ID: ${id}, payload: ${JSON.stringify(payload)}`);
     
     let fetchedSession;
     try{
@@ -31,10 +31,11 @@ const updateStorySessionById = async (id, payload) => {
         return error;
     }
 
-    fetchedSession.sessionFlagList = payload.sessionFlagList;
-    fetchedSession.sessionLastActiveStitch = payload.sessionLastActiveStitch;
-
+    fetchedSession.sessionFlagList = payload.newFlagList;
+    fetchedSession.sessionLastActiveStitch = payload.currentStitch;
+    
     try {
+        console.log(`updating session to use flaglist: ${fetchedSession.sessionFlagList} and last active stitch: ${fetchedSession.sessionLastActiveStitch}`);   
         await fetchedSession.save();
     } catch (err) {
         const error = new HttpError(

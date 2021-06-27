@@ -121,7 +121,7 @@ const moveStorySession = async (req, res, next) => {
     const fetchedNotes = await NoteService.getNotesByLocation(location);
     
     // TODO: It will update the story session matching this ID/story combination to have the new flaglist
-    const sessionPayload = { currentStitch}
+    const sessionPayload = { currentStitch, newFlagList }
     const updatedSession = await StorySessionService.updateStorySessionById(sessionId, sessionPayload);
 
 
@@ -136,7 +136,7 @@ const moveStorySession = async (req, res, next) => {
         fetchedNotes: fetchedNotes
     }
 
-    res.json(frontEndObject);
+    await res.json(frontEndObject);
 }
 
 

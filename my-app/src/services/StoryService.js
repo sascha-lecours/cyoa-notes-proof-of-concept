@@ -22,14 +22,21 @@
 // Make another function that simply takes in a choice, a user, and a story and then calls advanceStory (above) as...
 // ... appropriate.
 
-/*
-export async function getFrontendStoryObject( {} ) {
+
+
+// Needs: req.body.userName, req.body.storyName, req.body.destinationStitch
+
+export async function moveStoryAndGetFrontend(userName, storyName, destinationStitch) {
     try{
-        console.log(` Note Service: Calling API and sending: ${JSON.stringify(location)}`);
-        const response = await fetch(`/api/notes/location`, {
+        console.log(`Moving story forward. User: ${JSON.stringify(userName)} Story: ${JSON.stringify(storyName)} Stitch: ${JSON.stringify(destinationStitch)}`);
+        const response = await fetch(`/api/story/move`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(location)
+            body: {
+                "userName" : userName, 
+                "storyName" : storyName, 
+                "destinationStitch" : destinationStitch
+            }
           })
         return await response.json();
     } catch(error) {
@@ -37,7 +44,6 @@ export async function getFrontendStoryObject( {} ) {
         return [];
     }
 }
-*/
 
 export async function getStoryText() {
 

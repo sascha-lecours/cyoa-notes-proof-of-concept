@@ -87,7 +87,7 @@ const getStorySessionByNames = async (req, res, next) => {
 const moveStorySession = async (req, res, next) => {
     
     // Will take a story session's idusername and story, and a destination, make the inkle object using the new destination and that session's flaglist (if any), 
-    const userName = req.body.userId;
+    const userName = req.body.userName;
     const storyName = req.body.storyName;
     const destinationStitch = req.body.destinationStitch;
 
@@ -115,12 +115,11 @@ const moveStorySession = async (req, res, next) => {
 
     // and then fetch the notes for its new location:
     const location = {
-        location: { story: storyName, stitch: currentStitch }
+        story: storyName, stitch: currentStitch
     }
 
     const fetchedNotes = await NoteService.getNotesByLocation(location);
     
-    // TODO: It will update the story session matching this ID/story combination to have the new flaglist
     const sessionPayload = { currentStitch, newFlagList }
     const updatedSession = await StorySessionService.updateStorySessionById(sessionId, sessionPayload);
 
@@ -133,7 +132,7 @@ const moveStorySession = async (req, res, next) => {
         paragraphList: paragraphList,
         choices: choices,
         choicesList: choicesList,
-        fetchedNotes: fetchedNotes
+        fetchedNotes: fetchedNotes.fetchedNotes
     }
 
     await res.json(frontEndObject);

@@ -8,7 +8,7 @@ import { Book } from './components/Book';
 
 import { getDebugSettings } from './services/AppSettingsService';
 import { getMarginNotes } from './services/NotesService.js';
-import { getStoryText, resetStory, getCurrentStitch, getCurrentStoryName } from './services/StoryService.js';
+import { getStoryText, resetStory, getCurrentStitch, getCurrentStoryName, moveStoryAndGetFrontend } from './services/StoryService.js';
 import { getChoices, getChoicesList, makeChoice } from './services/ChoiceService.js';
 
 
@@ -16,6 +16,7 @@ function App() {
 
   const [currentStoryTitle, setCurrentStoryTitle] = useState(null);
   const [currentStitchName, setCurrentStitchName] = useState(null);
+  const [currentUserName, setCurrentUserName] = useState(null);
 
   const [marginNotes, setMarginNotes] = useState([]);
   const [storyText, setStoryText] = useState([]);
@@ -59,6 +60,8 @@ function App() {
         setStoryText(text);
       });
 
+      // TODO: also get current username and add to the state
+
     getChoices()
       .then(choices => {
         //console.log(choices);
@@ -75,7 +78,8 @@ function App() {
   }, [needToUpdate]);
 
   const makeChoiceAndUpdate = (destination) => {
-    makeChoice(destination);
+    //makeChoice(destination);
+    moveStoryAndGetFrontend(currentUserName, currentStoryTitle, destination); // TODO: needs to be given userName and storyName as well
     setNeedToUpdate(true);
   }
 

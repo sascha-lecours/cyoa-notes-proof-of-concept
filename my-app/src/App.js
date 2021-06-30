@@ -16,23 +16,33 @@ function App() {
 
   const [currentStoryTitle, setCurrentStoryTitle] = useState(null);
   const [currentStitchName, setCurrentStitchName] = useState(null);
-  const [currentUserName, setCurrentUserName] = useState(null);
-
+  const [currentUserName, setCurrentUserName] = useState(null); // TODO: hook this up properly
   const [marginNotes, setMarginNotes] = useState([]);
   const [storyText, setStoryText] = useState([]);
   const [choices, setChoices] = useState({});
   const [choicesList, setChoicesList] = useState([]);
   const [needToUpdate, setNeedToUpdate] = useState(true);
+  const [frontEndObject, setFrontEndObject] = useState({}); // This needs to be saved in the method that picks choices
   
   const [showDebugTools, setShowDebugTools] = useState(false);
   
+
   useEffect(() => {
     getCurrentStoryName()
-    .then(storyTitle => setCurrentStoryTitle(storyTitle))
+    .then(storyTitle => setCurrentStoryTitle(storyTitle));
+    
+    setCurrentStitchName("testuser02"); // TODO: this is only a placeholder username for testing
   }, []);
+
+  // The frontend state object (frontEndObject) will be saved in the method that moves the story, and then drawn from here.
   
-  useEffect(() => { //TODO: Break these out more finely when the time comes rather than updating all of them every time
+  useEffect(() => { // TODO: Break these out more finely when the time comes rather than updating all of them every time
     if(!needToUpdate) return;
+
+    if(!showDebugTools) { 
+      getDebugSettings()
+      .then(showDebugTools => setShowDebugTools(showDebugTools));
+    }
 
     getCurrentStitch()
     .then(stitchName => setCurrentStitchName(stitchName));
@@ -49,10 +59,7 @@ function App() {
       });
     }
 
-    if(!showDebugTools) { 
-      getDebugSettings()
-      .then(showDebugTools => setShowDebugTools(showDebugTools));
-    }
+
 
     getStoryText()
       .then(text =>{
@@ -77,10 +84,11 @@ function App() {
       setNeedToUpdate(false);
   }, [needToUpdate]);
 
-  const makeChoiceAndUpdate = (destination) => {
+  const makeChoiceAndUpdate = async (destination) => {
     //makeChoice(destination);
-    moveStoryAndGetFrontend(currentUserName, currentStoryTitle, destination); // TODO: needs to be given userName and storyName as well
+    let frontEndObj = await moveStoryAndGetFrontend(currentUserName, currentStoryTitle, destination); // TODO: needs to be given userName and storyName as well
     setNeedToUpdate(true);
+    setFrontEndObject(frontEndObj);
   }
 
 
@@ -118,6 +126,7 @@ const GetCurrentStitchButton = () => {
             makeChoice={makeChoiceAndUpdate}
             currentStitch={currentStitchName}
             currentStory={currentStoryTitle}
+            setFrontEndObject={setFrontEndObject}
           ></Book>
         </div>
 

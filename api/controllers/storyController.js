@@ -85,11 +85,13 @@ const getStorySessionByNames = async (req, res, next) => {
 
 // POST request with the username and story of a storysession along with a stitchname for the destination, all as one object.
 const moveStorySession = async (req, res, next) => {
-    
+    console.log(`Parsing request to move story: ${JSON.stringify(req.body)}`)
     // Will take a story session's idusername and story, and a destination, make the inkle object using the new destination and that session's flaglist (if any), 
     const userName = req.body.userName;
     const storyName = req.body.storyName;
     const destinationStitch = req.body.destinationStitch;
+
+    console.log(`Moving story and getting frontend. username: ${userName} story: ${storyName} destination: ${destinationStitch}`);
 
     const rawStoryText = await StoryService.getRawStoryTextByName(storyName);
     
@@ -98,6 +100,7 @@ const moveStorySession = async (req, res, next) => {
     const sessionFlagList = await fullSession.sessionFlaglist;
     const sessionId = await fullSession._id;
 
+    console.log("now making inkle object from raw text...")
     // Inklewriter initialization
     let inkle = new libinkle({ source: rawStoryText });
 

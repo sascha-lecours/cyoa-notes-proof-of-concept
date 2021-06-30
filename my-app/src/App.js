@@ -22,7 +22,7 @@ function App() {
   const [choices, setChoices] = useState({});
   const [choicesList, setChoicesList] = useState([]);
   const [needToUpdate, setNeedToUpdate] = useState(true);
-  const [frontEndObject, setFrontEndObject] = useState({}); // This needs to be saved in the method that picks choices
+  const [frontEndObject, setFrontEndObject] = useState({}); // To be passed down in a callback function to the choice-maker component
   
   const [showDebugTools, setShowDebugTools] = useState(false);
   
@@ -31,7 +31,7 @@ function App() {
     getCurrentStoryName()
     .then(storyTitle => setCurrentStoryTitle(storyTitle));
     
-    setCurrentStitchName("testuser02"); // TODO: this is only a placeholder username for testing
+    setCurrentUserName("testuser02"); // TODO: this is only a placeholder username for testing
   }, []);
 
   // The frontend state object (frontEndObject) will be saved in the method that moves the story, and then drawn from here.

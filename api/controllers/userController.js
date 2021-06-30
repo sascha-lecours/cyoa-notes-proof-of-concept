@@ -1,35 +1,70 @@
+const { v4: uuid } = require('uuid');
 const { validationResult } = require('express-validator');
+
 const User = require('../models/user');
 const HttpError = require('../models/httpError');
 const mongoose = require('mongoose');
 
-const createUser = async (req, res, next) => {
+const url = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
+
+mongoose.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }).then(()=>{
+    console.log('Connected to database.');
+}).catch(()=>{
+    console.log('Connection to database failed!');
+}); 
+
+const signup = async (req, res, next) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
         return next(
             new HttpError('Invalid user passed, check data.', 422)
         );
     }
-    const { username, password, email } = req.body;
+    const { name, password, email, notes, storySessions } = req.body;
 
-    const createdUser = new User({
-        username,
-        password,
-        email
-    });
-
+    let existingUser;
     try {
-        await createdUser.save();
-    } catch (err) {
+        existingUser = await User.findOne({ email: email });
+    } catch {
         const error = new HttpError(
-            'Creating user has failed',
+            'Signing up failed, please try again later.',
             500
         );
         return next(error);
     }
-    console.log(`Created new user: ${username}`);
-    res.status(201).json({ user: createdUser });
-}
+
+    if (existingUser){
+        const error = new HttpError(
+            'User exists already, please login instead.',
+            422
+        );
+        return next(error);
+    }
+    
+
+    let createdUser = new User({
+        name,
+        password, // TODO: replace this with encrypted version later
+        email,
+        image: 'https://homepages.cae.wisc.edu/~ece533/images/tulips.png',
+        notes,
+        storySessions
+    });
+    
+    console.log(`New user submitted for saving: ${JSON.stringify(createdUser)} ...`);
+    
+    try {
+        await createdUser.save();
+    } catch (err) {
+        const error = new HttpError(
+            'Saving created user to DB has failed',
+            500
+        );
+        return next(error);
+    }
+    console.log(`Created new user: ${name}`);
+    res.status(201).json({user: createdUser.toObject({ getters: true })});
+};
 
 const getUserById = async (req, res, next) => {
     const userId = req.params.uid;
@@ -86,6 +121,6 @@ const deleteUser = async (req, res, next) => {
 
 
 exports.getUserById = getUserById;
-exports.createUser = createUser;
+exports.signup = signup;
 exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;

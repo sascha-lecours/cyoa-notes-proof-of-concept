@@ -10,10 +10,21 @@ const router = express.Router();
 router.get('/id/:uid', userController.getUserById);
 
 
-router.post( // TODO: add validation
-    '/',
-    userController.createUser
-);
+
+router.post(
+    '/signup',
+    [
+        check('name')
+        .not()
+        .isEmpty(),
+        check('email')
+        .normalizeEmail()
+        .isEmail(),
+        check('password').isLength({ min: 6 })
+    ],
+    userController.signup
+    );
+
 
 router.delete('/:uid', userController.deleteUser)
 

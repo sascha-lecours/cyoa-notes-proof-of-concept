@@ -8,7 +8,7 @@ const router = express.Router();
 // TODO: make these point to services instead
 
 router.get('/id/:uid', userController.getUserById);
-
+router.get('/', userController.getUsers);
 
 
 router.post(
@@ -23,6 +23,17 @@ router.post(
         check('password').isLength({ min: 6 })
     ],
     userController.signup
+    );
+
+router.post(
+    '/login',
+    [
+        check('email')
+        .normalizeEmail()
+        .isEmail(),
+        check('password').isLength({ min: 6 })
+    ],
+    userController.login
     );
 
 

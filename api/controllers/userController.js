@@ -66,6 +66,32 @@ const signup = async (req, res, next) => {
     res.status(201).json({user: createdUser.toObject({ getters: true })});
 };
 
+const login = async (req, res, next) => {
+    const { email, password } = req.body;
+
+    let existingUser;
+
+    try {
+        existingUser = await User.findOne({ email: email });
+    } catch {
+        const error = new HttpError(
+            'Login failed, please try again later.',
+            500
+        );
+        return next(error);
+    }
+
+    if(!existingUser || existingUser.password !== password){
+        const error = new HttpError(
+            'Invalid credentials, could not log in.',
+            401
+        );
+        return next(error);
+    }
+
+    res.json({message: 'User logged in'});
+}
+
 const getUserById = async (req, res, next) => {
     const userId = req.params.uid;
     let user; 
@@ -80,10 +106,27 @@ const getUserById = async (req, res, next) => {
     }
     
     if(!user) {
-        const error =  new HttpError('Could not find a user with the specified ID.', 404);
+        const error =  new HttpError('Could not find a user with the specified ID.',
+        404
+        );
         return next(error);
     }
     res.json({ user: user.toObject({ getters: true }) }); // "Getters" being true adds "id" property, not just the underscore-prefixed ID in DB.
+}
+
+const getUsers = async (req, res, next) => {
+    let users;
+    try {
+        users = await User.find({}, '-password'); // empty object for projection. Omitting password
+    } catch (err) {
+        const error = new HttpError(
+            'Fetching users failed, please try again later.',
+            500
+        );
+        return next(error);
+    }
+    res.json({ users: users.map(user => user.toObject({getters: true })) });
+
 }
 
 const updateUser = async (req, res, next) => {
@@ -122,5 +165,7 @@ const deleteUser = async (req, res, next) => {
 
 exports.getUserById = getUserById;
 exports.signup = signup;
+exports.login = login;
 exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
+exports.getUsers = getUsers;

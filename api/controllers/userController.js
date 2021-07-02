@@ -20,7 +20,7 @@ const signup = async (req, res, next) => {
             new HttpError('Invalid user passed, check data.', 422)
         );
     }
-    const { name, password, email, notes, storySessions } = req.body;
+    const { name, password, email } = req.body;
 
     let existingUser;
     try {
@@ -47,8 +47,8 @@ const signup = async (req, res, next) => {
         password, // TODO: replace this with encrypted version later
         email,
         image: 'https://homepages.cae.wisc.edu/~ece533/images/tulips.png',
-        notes,
-        storySessions
+        notes: [],
+        storySessions: []
     });
     
     console.log(`New user submitted for saving: ${JSON.stringify(createdUser)} ...`);
@@ -114,10 +114,12 @@ const getUserById = async (req, res, next) => {
     res.json({ user: user.toObject({ getters: true }) }); // "Getters" being true adds "id" property, not just the underscore-prefixed ID in DB.
 }
 
+
+// Returns array containing all users
 const getUsers = async (req, res, next) => {
     let users;
     try {
-        users = await User.find({}, '-password'); // empty object for projection. Omitting password
+        users = await User.find({}, '-password'); // Empty object for projection. Omitting password
     } catch (err) {
         const error = new HttpError(
             'Fetching users failed, please try again later.',

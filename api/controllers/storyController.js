@@ -13,7 +13,7 @@ const url = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mong
 /*
 mongoose.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }).then(()=>{
     console.log('Connected to database.');
-}).catch(()=>{
+}).catch(()=> {
     console.log('Connection to database failed!');
 }); */
 
@@ -36,7 +36,8 @@ const getStories = async (req, res, next) => { // Array of all stories. Extremel
 };
 
 
-// Takes in a usersession as an argument and returns a frontendobject
+// Takes in a usersession as an argument and returns a frontendobject 
+// TODO: this may be redundant in combination with the story moving method which returns a frontend object.
 const getStoryFrontEndObject = async (req, res, next) => {
     /*{
         storyName, // Not the inkle one,the DB one.

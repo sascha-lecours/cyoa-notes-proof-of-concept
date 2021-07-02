@@ -3,6 +3,7 @@ const Note = require('../models/note');
 const NoteService = require('../services/noteService');
 const HttpError = require('../models/httpError');
 const mongoose = require('mongoose');
+const { findById } = require('../models/note');
 
 const createNote = async (req, res, next) => {
     const errors = validationResult(req);
@@ -11,18 +12,42 @@ const createNote = async (req, res, next) => {
             new HttpError('Invalid note passed, check data.', 422)
         );
     }
-    const { user, location, content, score, image } = req.body;
+    const { creator, location, content, score, image } = req.body;
+
 
     const createdNote = new Note({
-        creator: user,
+        creator,
         location,
         content,
         score,
         image
     });
 
+    let user;
+
     try {
-        await createdNote.save();
+        user = await findById(creator);
+    } catch (err) {
+        const error = new HttpError(
+            'Creating note failed',
+            500
+        );
+        return next(error);
+    }
+
+    if (!user) {
+        const error = new HttpError('Could not find user for provided ID', 404);
+        return next(error);
+    }
+
+    try {
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        await createdNote.save({ session: sess });
+        user.notes.push(createdNote);
+        await user.save({ session: sess });
+        await sess.commitTransaction();
+        
     } catch (err) {
         const error = new HttpError(
             'Creating note has failed',

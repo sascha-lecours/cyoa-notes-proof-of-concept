@@ -4,6 +4,7 @@ const NoteService = require('../services/noteService');
 const HttpError = require('../models/httpError');
 const mongoose = require('mongoose');
 const { findById } = require('../models/note');
+const Users = require('../models/user');
 
 const createNote = async (req, res, next) => {
     const errors = validationResult(req);
@@ -26,10 +27,11 @@ const createNote = async (req, res, next) => {
     let user;
 
     try {
-        user = await findById(creator);
+        console.log(creator);
+        user = await Users.findById(creator);
     } catch (err) {
         const error = new HttpError(
-            'Creating note failed',
+            'Creating note failed (error when finding ID)',
             500
         );
         return next(error);
@@ -47,7 +49,7 @@ const createNote = async (req, res, next) => {
         user.notes.push(createdNote);
         await user.save({ session: sess });
         await sess.commitTransaction();
-        
+
     } catch (err) {
         const error = new HttpError(
             'Creating note has failed',

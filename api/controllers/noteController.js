@@ -3,7 +3,6 @@ const Note = require('../models/note');
 const NoteService = require('../services/noteService');
 const HttpError = require('../models/httpError');
 const mongoose = require('mongoose');
-const { findById } = require('../models/note');
 const Users = require('../models/user');
 
 const createNote = async (req, res, next) => {
@@ -87,6 +86,31 @@ const getNotesByLocation = async (req, res, next) => {
 
 }
 
+const getNotesByUserId = async (req, res, next) => {
+
+    const userId = req.params.uid;
+    let userWithNotes;
+
+    try {
+        console.log(userId);
+        userWithNotes = await Users.findById(userId).populate('notes');
+    } catch (err) {
+        const error = new HttpError(
+            'Fetching notes by user ID failed, please try again later',
+            500
+        );
+        return next(error);
+    }
+
+    if(!userWithNotes || userWithNotes.notes.length === 0) {
+        return next(
+            new HttpError('Could not find notes for the provided user ID.', 404)
+        );
+    };
+
+    res.json({ notes: userWithNotes.notes.map(note => note.toObject({ getters: true })) });
+}
+
 const updateNote = async (req, res, next) => {
     // TODO
 }
@@ -137,3 +161,4 @@ exports.getNotesByLocation = getNotesByLocation;
 exports.createNote = createNote;
 exports.updateNote = updateNote;
 exports.deleteNote = deleteNote;
+exports.getNotesByUserId = getNotesByUserId;

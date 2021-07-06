@@ -9,6 +9,7 @@ const router = express.Router();
 
 
 router.get('/id/:nid', noteController.getNoteById);
+router.get('/userid/:uid', noteController.getNotesByUserId);
 
 router.post('/location', noteController.getNotesByLocation);
 

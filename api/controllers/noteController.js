@@ -96,20 +96,33 @@ const deleteNote = async (req, res, next) => {
 
     let note;
     try {
-        note = await Note.findById(noteId);
+        note = await Note.findById(noteId).populate('creator'); // Using populate() to refer to a doc in another collection using the relations in the models.
     } catch (err) {
         const error = new HttpError(
-            'Something went wrong while attempting to a delete a note.',
+            'Something went wrong while attempting to a delete a note. (1)',
             500
         );
         return next(error);
     }
 
+    if (!note) {
+        const error = new HttpError(
+            'No place found for this ID.',
+            404
+        );
+        return next(error);
+    }
+
     try {
-        await note.remove();
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        await note.remove({ session: sess });
+        note.creator.notes.pull(note); // This works because creator was populated() earlier so creator's fields are available
+        await note.creator.save({ session: sess });
+        await sess.commitTransaction();
     } catch (err) {
         const error = new HttpError(
-            'Something went wrong while attempting to a delete a note.',
+            'Something went wrong while attempting to a delete a note. (2)',
             500
         );
         return next(error);
@@ -117,8 +130,6 @@ const deleteNote = async (req, res, next) => {
 
     res.status(200).json({ message: 'Deleted note.' });
 }
-
-
 
 
 exports.getNoteById = getNoteById;

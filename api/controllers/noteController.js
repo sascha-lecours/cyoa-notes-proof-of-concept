@@ -37,7 +37,10 @@ const createNote = async (req, res, next) => {
     }
 
     if (!user) {
-        const error = new HttpError('Could not find user for provided ID', 404);
+        const error = new HttpError(
+            'Could not find user for provided ID', 
+            404
+        );
         return next(error);
     }
 
@@ -74,7 +77,9 @@ const getNoteById = async (req, res, next) => {
     }
     
     if(!note) {
-        const error =  new HttpError('Could not find a note with the specified ID.', 404);
+        const error =  new HttpError(
+            'Could not find a note with the specified ID.', 404
+        );
         return next(error);
     }
     res.json({ note: note.toObject({ getters: true }) }); // "Getters" being true adds "id" property, not just the underscore-prefixed ID in DB.
@@ -83,7 +88,6 @@ const getNoteById = async (req, res, next) => {
 const getNotesByLocation = async (req, res, next) => {
     const fetchedNotes = await NoteService.getNotesByLocation(req.body.location);
     res.status(200).json( fetchedNotes );
-
 }
 
 const getNotesByUserId = async (req, res, next) => {

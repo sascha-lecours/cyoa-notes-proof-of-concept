@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../App.css';
+import { NavLink } from 'react-router-dom';
 
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
@@ -10,6 +10,8 @@ import { getDebugSettings } from '../services/AppSettingsService';
 import { getMarginNotes } from '../services/NotesService.js';
 import { getStoryText, resetStory, getCurrentStitch, getCurrentStoryName, moveStoryAndGetFrontend } from '../services/StoryService.js';
 import { getChoices, getChoicesList, makeChoice } from '../services/ChoiceService.js';
+
+import '../App.css';
 
 
 const Game = () => {
@@ -111,6 +113,12 @@ const GetCurrentStitchButton = () => {
   );
 }
 
+const AuthLink = () => {
+  return (
+    <NavLink to="/auth">Visit Auth Page</NavLink>
+  );
+}
+
 
 // Debugging tools end.
 
@@ -133,6 +141,7 @@ const GetCurrentStitchButton = () => {
         <div>
           { showDebugTools ? <ResetButton /> : null }
           { showDebugTools ? <GetCurrentStitchButton /> : null }
+          { showDebugTools ? <AuthLink /> : null }
         </div>
 
         <Footer />

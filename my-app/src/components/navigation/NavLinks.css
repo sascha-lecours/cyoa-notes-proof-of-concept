@@ -24,15 +24,15 @@
 .nav-links a:hover,
 .nav-links a:active,
 .nav-links a.active {
-  background: #f8df00;
+  background: #f1f0cc;
   border-color: #292929;
   color: #292929;
 }
 
 .nav-links button {
   cursor: pointer;
-  border: 1px solid #292929;
-  color: #292929;
+  border: 1px solid #090909;
+  color: #090909;
   background: transparent;
   padding: 0.5rem;
   font: inherit;
@@ -70,7 +70,7 @@
   
   .nav-links button:hover,
   .nav-links button:active {
-    background: #f8df00;
+    background: #f1f0cc;
     color: #292929;
   }
 }

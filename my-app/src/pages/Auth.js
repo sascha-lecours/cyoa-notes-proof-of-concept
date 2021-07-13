@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import Card from '../components/Card';
 import Input from '../components/Input';
 import { useForm } from '../util/hooks/formHooks';
-import './styling/Auth.css';
+import { AuthContext } from '../util/auth-context';
 import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from '../util/validators';
 
+import './styling/Auth.css';
 
 const Auth = () => {
+    const auth = useContext(AuthContext);
     const [isLoginMode, setIsLoginMode] = useState(true);
 
     const [formState, inputHandler, setFormData] = useForm({
@@ -44,6 +46,7 @@ const Auth = () => {
     const authSubmitHandler = event => {
         event.preventDefault();
         console.log(formState.inputs); // TODO: connect this to backend and actually authenticate
+        auth.login();
     };
 
     return <Card className="authentication">

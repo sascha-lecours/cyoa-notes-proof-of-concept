@@ -10,8 +10,9 @@ export const Book = ({marginNotes, storyText, choices, choicesList, makeChoice, 
     const bookStyle = {
         width: '100%',
         minHeight: '600px',
+        maxWidth: '150rem',
         padding: '2%',
-        margin: 'auto',
+        margin: '0 auto',
         backgroundColor: myPalette[0],
         display: 'flex',
         flexFlow: 'row'

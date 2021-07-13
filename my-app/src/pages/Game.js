@@ -113,13 +113,6 @@ const GetCurrentStitchButton = () => {
   );
 }
 
-const AuthLink = () => {
-  return (
-    <NavLink to="/auth">Visit Auth Page</NavLink>
-  );
-}
-
-
 // Debugging tools end.
 
     return (
@@ -141,7 +134,6 @@ const AuthLink = () => {
         <div>
           { showDebugTools ? <ResetButton /> : null }
           { showDebugTools ? <GetCurrentStitchButton /> : null }
-          { showDebugTools ? <AuthLink /> : null }
         </div>
 
         <Footer />

@@ -1,13 +1,14 @@
 const express = require('express');
 const path = require('path');
-const app = express(), port = 3080;
 const mongoose = require('mongoose');
-const HttpError = require('./models/httpError');
-const connectionUrl = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
 
+const HttpError = require('./models/httpError');
 const notesRoutes = require('./routes/notes-routes');
 const userRoutes = require('./routes/user-routes');
 const storyRoutes = require('./routes/story-routes');
+
+const app = express(), port = 3080;
+const connectionUrl = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
 
 
 // Inklewriter initialization
@@ -19,6 +20,8 @@ const libinkle = require('libinkle');
 
 const showTools = true;
 
+
+// TODO: remove when no longer needed
 const testFlagList = [ 'saw mpsafd briefing', 'checked cra info', 'know waterloo' ]; // To be passed in for testing of preset flags
 
 // Basic inkle initialization and single-story functions:
@@ -59,11 +62,24 @@ const placeHolderStoryTitle = "Hunt for M. Big Foot"; // TODO: This is a placeho
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../my-app/build')));
 
+// CORS handling
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers', 
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  );
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
+
+  next();
+});
 
 app.use('/api/notes', notesRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/story', storyRoutes);
 
+
+// -- Things to be refactored begin here --
 app.get('/api/currentStitch', (req, res) => {
   console.log('Current stitch: ' + currentStitch);
   res.json(currentStitch);
@@ -103,8 +119,6 @@ app.get('/api/reset', (req, res) => {
 });
 
 
-
-
 app.post('/api/makechoice', (req, res) => {
     const destination = req.body.destination;
     console.log('Making choice that leads to ', destination);
@@ -112,6 +126,8 @@ app.post('/api/makechoice', (req, res) => {
     moveToNewStitch();
     res.json("Choice made.");
   });
+
+// -- End of section that needs to be refactored (moved) --
 
 // Start listening
 

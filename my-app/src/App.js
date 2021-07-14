@@ -27,16 +27,16 @@ const App = () => {
   // TODO: Add "my notes" route to logged in switch
   if (isLoggedIn) {
     routes = (
-      <React.Fragment>
+      <Switch>
         <Route path="/" exact>
           <Game />
         </Route>
         <Redirect to="/" />
-      </React.Fragment>
+      </Switch>
     );
   } else {
     routes = (
-      <React.Fragment>
+      <Switch>
         <Route path="/" exact>
           <hr />
           <hr />
@@ -48,7 +48,7 @@ const App = () => {
           <Auth />
         </Route>
         <Redirect to="/auth" />
-      </React.Fragment>
+      </Switch>
     );
   }
 
@@ -60,7 +60,7 @@ const App = () => {
       <Router>
         <MainNavigation />
         <main>
-          <Switch>{routes}</Switch>
+          {routes}
         </main>
       </Router>
     </AuthContext.Provider>

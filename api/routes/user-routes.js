@@ -15,11 +15,11 @@ router.post(
     '/signup',
     [
         check('name')
-        .not()
-        .isEmpty(),
+            .not()
+            .isEmpty(),
         check('email')
-        .normalizeEmail()
-        .isEmail(),
+            .normalizeEmail()
+            .isEmail(),
         check('password').isLength({ min: 6 })
     ],
     userController.signup

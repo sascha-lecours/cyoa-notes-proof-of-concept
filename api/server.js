@@ -8,6 +8,7 @@ const userRoutes = require('./routes/user-routes');
 const storyRoutes = require('./routes/story-routes');
 
 const app = express(), port = 3080;
+
 const connectionUrl = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
 
 
@@ -79,6 +80,8 @@ app.use('/api/user', userRoutes);
 app.use('/api/story', storyRoutes);
 
 
+
+
 // -- Things to be refactored begin here --
 app.get('/api/currentStitch', (req, res) => {
   console.log('Current stitch: ' + currentStitch);
@@ -127,7 +130,21 @@ app.post('/api/makechoice', (req, res) => {
     res.json("Choice made.");
   });
 
-// -- End of section that needs to be refactored (moved) --
+// -- End of section that needs to be refactored (Replaced with routes) --
+
+
+app.use((req, res, next) => {
+  const error = new HttpError('Could not find this route.', 404);
+  throw error;
+});
+
+app.use((error, req, res, next) => {
+  if (res.headerSent) {
+    return next(error);
+  }
+  res.status(error.code || 500);
+  res.json({ message: error.message || 'An unknown error occurred!' });
+});
 
 // Start listening
 
@@ -138,7 +155,7 @@ mongoose
     console.log(`Server listening on the port::${port}`);
   });
 })
-.catch(error => {
-  console.log(error);
+.catch(err => {
+  console.log(err);
 });
 

@@ -3,20 +3,12 @@ const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
 const HttpError = require('../models/httpError');
-const mongoose = require('mongoose');
-
-const url = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
-
-mongoose.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }).then(()=>{
-    console.log('Connected to database.');
-}).catch(()=>{
-    console.log('Connection to database failed!');
-}); 
 
 const signup = async (req, res, next) => {
+
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
-        return next(
+        return next(            
             new HttpError('Invalid user passed, check data.', 422)
         );
     }
@@ -25,7 +17,7 @@ const signup = async (req, res, next) => {
     let existingUser;
     try {
         existingUser = await User.findOne({ email: email });
-    } catch {
+    } catch (err) {
         const error = new HttpError(
             'Signing up failed, please try again later.',
             500
@@ -33,14 +25,13 @@ const signup = async (req, res, next) => {
         return next(error);
     }
 
-    if (existingUser){
+    if (existingUser) {
         const error = new HttpError(
-            'User exists already, please login instead.',
-            422
+          'User exists already, please login instead.',
+          422
         );
         return next(error);
-    }
-    
+      }
 
     let createdUser = new User({
         name,

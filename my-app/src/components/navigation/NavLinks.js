@@ -14,6 +14,11 @@ const NavLinks = props => {
           PLAY A STORY
         </NavLink>
       </li>
+      <li>
+        <NavLink to="/users" exact>
+          ALL USERS
+        </NavLink>
+      </li>
       {auth.isLoggedIn && (
         <li>
           <NavLink to="/u1/notes">MY NOTES</NavLink>

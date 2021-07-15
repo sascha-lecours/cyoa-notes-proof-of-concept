@@ -50,11 +50,35 @@ const Auth = () => {
     const authSubmitHandler = async event => {
         event.preventDefault();
         
+        setIsLoading(true);
         if(isLoginMode) {
-            //fetch('http://localhost:3080/api/user/login');
+            
+            try {
+                const response = await fetch('http://localhost:3080/api/user/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: formState.inputs.email.value,
+                        password: formState.inputs.password.value
+                    })
+                });
+
+                const responseData = await response.json();
+                if(!response.ok) {
+                    console.log(responseData.message);
+                    throw new Error(responseData.message);
+                }
+                setIsLoading(false);
+                auth.login();
+            } catch (err) {
+                setIsLoading(false);
+                setError(err.message || 'Something went wrong, please try again');
+            }
         } else {
             try {
-                setIsLoading(true);
+                
                 const response = await fetch('http://localhost:3080/api/user/signup', {
                     method: 'POST',
                     headers: {
@@ -67,61 +91,73 @@ const Auth = () => {
                     })
                 });
 
-                const responseData = await response.json(); 
-                console.log(responseData); // TODO: proper handling
+                const responseData = await response.json();
+                if(!response.ok) {
+                    console.log(responseData.message);
+                    throw new Error(responseData.message);
+                }
+                console.log(`Sign up: ${responseData}`);
                 setIsLoading(false);
                 auth.login();
             } catch (err) {
                 setIsLoading(false);
                 setError(err.message || 'Something went wrong, please try again');
-                console.log(err) // TODO: Proper handling
             }
             
         }    
     };
 
-    return <Card className="authentication">
-        {isLoading && <LoadingSpinner asOverlay />}
-        <h2>Login Required</h2>
-        <hr />
-        <form onSubmit={authSubmitHandler}>
-            {!isLoginMode && (
-                <Input 
-                    element="input" 
-                    id="name" 
-                    type="text" 
-                    label="Username" 
-                    validators={[VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH(3)]}
-                    errorText="Please enter a user name"
-                    onInput={inputHandler}
-                />
-            )}
-            <Input 
-                element="input" 
-                id="email" 
-                type="email" 
-                label="Email" 
-                validators={[VALIDATOR_EMAIL()]}
-                errorText="Please provide a valid email"
-                onInput={inputHandler}
-            />
-            <Input 
-                element="input" 
-                id="password" 
-                type="password" 
-                label="Password" 
-                validators={[VALIDATOR_MINLENGTH(5)]}
-                errorText="Passwords must be at least 5 characters"
-                onInput={inputHandler}
-            />
-            <button className="btn btn-primary" disabled={!formState.isValid}>
-                {isLoginMode ? 'Login' : 'Sign Up'}
-            </button>
-        </form>
-        <button className="btn btn-info" onClick={switchModeHandler}>
-            Switch to {isLoginMode ? 'Sign Up' : 'Login'}
-        </button>
-    </Card>;
+    const errorHandler = () => {
+        setError(null);
+    }
+
+    return (
+        <React.Fragment>
+            <ErrorModal error={error} onClear={errorHandler} />
+            <Card className="authentication">
+                {isLoading && <LoadingSpinner asOverlay />}
+                <h2>Login Required</h2>
+                <hr />
+                <form onSubmit={authSubmitHandler}>
+                    {!isLoginMode && (
+                        <Input 
+                            element="input" 
+                            id="name" 
+                            type="text" 
+                            label="Username" 
+                            validators={[VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH(3)]}
+                            errorText="Please enter a user name"
+                            onInput={inputHandler}
+                        />
+                    )}
+                    <Input 
+                        element="input" 
+                        id="email" 
+                        type="email" 
+                        label="Email" 
+                        validators={[VALIDATOR_EMAIL()]}
+                        errorText="Please provide a valid email"
+                        onInput={inputHandler}
+                    />
+                    <Input 
+                        element="input" 
+                        id="password" 
+                        type="password" 
+                        label="Password" 
+                        validators={[VALIDATOR_MINLENGTH(6)]}
+                        errorText="Passwords must be at least 6 characters"
+                        onInput={inputHandler}
+                    />
+                    <button className="btn btn-primary" disabled={!formState.isValid}>
+                        {isLoginMode ? 'Login' : 'Sign Up'}
+                    </button>
+                </form>
+                <button className="btn btn-info" onClick={switchModeHandler}>
+                    Switch to {isLoginMode ? 'Sign Up' : 'Login'}
+                </button>
+            </Card>
+        </React.Fragment>
+    );
 }
 
 export default Auth;

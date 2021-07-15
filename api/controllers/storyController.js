@@ -1,5 +1,3 @@
-const mongoose = require('mongoose');
-
 const libinkle = require('libinkle');
 
 const Story = require('../models/stories');
@@ -8,16 +6,6 @@ const NoteService = require('../services/noteService');
 const StoryService = require('../services/storyService');
 const StorySessionService = require('../services/storySessionService');
 
-const url = 'mongodb+srv://Admin:halfquadbenchstargrassevoke@cluster0.6layg.mongodb.net/story_test?retryWrites=true&w=majority';
-
-/*
-mongoose.connect(url, { useUnifiedTopology: true, useNewUrlParser: true }).then(()=>{
-    console.log('Connected to database.');
-}).catch(()=> {
-    console.log('Connection to database failed!');
-}); */
-
- // TODO: use global connection object and don't connect here specifically
 
 const createStory = async (req, res, next) => {
     const createdStory = new Story({

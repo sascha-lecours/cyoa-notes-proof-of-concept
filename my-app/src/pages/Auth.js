@@ -2,6 +2,8 @@ import React, { useState, useContext } from 'react';
 
 import Card from '../components/Card';
 import Input from '../components/Input';
+import ErrorModal from '../components/appearance/ErrorModal';
+import LoadingSpinner from '../components/appearance/LoadingSpinner';
 import { useForm } from '../util/hooks/formHooks';
 import { AuthContext } from '../util/auth-context';
 import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from '../util/validators';
@@ -11,6 +13,8 @@ import './styling/Auth.css';
 const Auth = () => {
     const auth = useContext(AuthContext);
     const [isLoginMode, setIsLoginMode] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
 
     const [formState, inputHandler, setFormData] = useForm({
         email: {
@@ -46,10 +50,11 @@ const Auth = () => {
     const authSubmitHandler = async event => {
         event.preventDefault();
         
-        if(isLoginMode){
+        if(isLoginMode) {
             //fetch('http://localhost:3080/api/user/login');
         } else {
             try {
+                setIsLoading(true);
                 const response = await fetch('http://localhost:3080/api/user/signup', {
                     method: 'POST',
                     headers: {
@@ -64,17 +69,19 @@ const Auth = () => {
 
                 const responseData = await response.json(); 
                 console.log(responseData); // TODO: proper handling
-
+                setIsLoading(false);
+                auth.login();
             } catch (err) {
+                setIsLoading(false);
+                setError(err.message || 'Something went wrong, please try again');
                 console.log(err) // TODO: Proper handling
             }
             
-        }
-
-        auth.login();
+        }    
     };
 
     return <Card className="authentication">
+        {isLoading && <LoadingSpinner asOverlay />}
         <h2>Login Required</h2>
         <hr />
         <form onSubmit={authSubmitHandler}>

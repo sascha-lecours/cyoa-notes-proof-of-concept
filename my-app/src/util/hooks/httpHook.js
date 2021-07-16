@@ -20,6 +20,9 @@ export const useHttpClient = () => {
             });
             const responseData = await response.json();
 
+            // Remove abort controller once request completes
+            activeHttpRequests.current = activeHttpRequests.current.filter(reqCtrl => reqCtrl !== httpAbortCtrl);
+
             if(!response.ok){
                 throw new Error(responseData.message);
             }

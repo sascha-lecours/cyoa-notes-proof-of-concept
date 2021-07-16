@@ -5,6 +5,9 @@ import Avatar from './Avatar';
 import Card from './Card';
 import './appearance/UserItem.css';
 
+
+// TODO: Update the link to correctly lead to that user's "Notes" page once that page is finished
+
 const UserItem = props => {
   return (
     <li className="user-item">

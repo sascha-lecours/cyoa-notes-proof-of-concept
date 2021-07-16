@@ -4,6 +4,9 @@ import UsersList from '../components/UsersList';
 import ErrorModal from '../components/appearance/ErrorModal';
 import LoadingSpinner from '../components/appearance/LoadingSpinner';
 
+
+// TODO: A page for viewing all of a user's notes, with consideration for whether it's the currently auth'd user
+
 const Users = () => {
 
     const [isLoading, setIsLoading] = useState(false);

@@ -1,10 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { myPalette } from './appearance/paletteConstants.js';
 import { MarginNotes } from './MarginNote.js';
-
-// TODO: add note-leaving functionality here
+import NoteAddingArea from './NoteAddingArea.js';
 
 export const MarginArea = ({ marginNotes, currentStitch, currentStory }) => {
+
+    const [showNoteAdder, setshowNoteAdder] = useState(false);
+
+    const toggleShowNoteAdder = () => {
+        setshowNoteAdder(!showNoteAdder);
+    }
 
         const marginAreaStyle = {
             width: '35%',
@@ -16,7 +21,8 @@ export const MarginArea = ({ marginNotes, currentStitch, currentStory }) => {
         return (
             <div className="Margin Area" style={marginAreaStyle}>
                 <MarginNotes marginNotes={marginNotes} />
-                <button className="btn btn-outline-primary">Leave a Note Here</button>
+                <button className="btn btn-outline-primary" onClick={toggleShowNoteAdder}>Leave a Note Here</button>
+                {showNoteAdder && <NoteAddingArea currentStitch={currentStitch} currentStory={currentStory} />}
             </div>
         )
 }

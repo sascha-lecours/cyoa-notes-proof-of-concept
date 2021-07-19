@@ -12,15 +12,17 @@ const createNote = async (req, res, next) => {
             new HttpError('Invalid note passed, check data.', 422)
         );
     }
-    const { creator, location, content, score, image } = req.body;
+    const { creator, location, content } = req.body;
 
+    // TODO: Take image as input in form?
+    const placeHolderImage = "https://homepages.cae.wisc.edu/~ece533/images/tulips.png"; 
 
     const createdNote = new Note({
         creator,
         location,
         content,
-        score,
-        image
+        score: 0,
+        image: placeHolderImage
     });
 
     let user;

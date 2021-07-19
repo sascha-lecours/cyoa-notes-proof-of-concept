@@ -1,30 +1,30 @@
 import React, { useEffect, useState } from 'react';
 
-import UsersList from '../components/UsersList';
 import ErrorModal from '../components/appearance/ErrorModal';
 import LoadingSpinner from '../components/appearance/LoadingSpinner';
 import { useHttpClient } from '../util/hooks/httpHook';
+import StoryList from '../components/StoryList';
 
 // TODO: Make a page for viewing all of a user's notes, with consideration for whether it's the currently auth'd user
 
-const Users = () => {
+const ChooseStory = () => {
 
-    const [loadedUsers, setLoadedUsers] = useState();
+    const [loadedStories, setLoadedStories] = useState();
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
     useEffect(()=>{
-        const fetchUsers = async () => {
+        const fetchStories = async () => {
             try {
                 const responseData = await sendRequest(
-                    'http://localhost:3080/api/user' // Defaults to GET, No body or headers since it's a GET
+                    'http://localhost:3080/api/story' // Defaults to GET, No body or headers since it's a GET
                 );
-                setLoadedUsers(responseData.users);
+                setLoadedStories(responseData.stories);
             } catch (err) {
                 // Error handled in sendRequest
             }
             
         };
-        fetchUsers();
+        fetchStories();
     }, [sendRequest]);
 
     const errorHandler = () => {
@@ -35,9 +35,9 @@ const Users = () => {
         <React.Fragment>
             <ErrorModal error={error} onClear={errorHandler} />
             {isLoading && <div className="center"> <LoadingSpinner /></div>}
-            {!isLoading && loadedUsers && <UsersList items={loadedUsers} />}
+            {!isLoading && loadedStories && <StoryList items={loadedStories} />}
         </React.Fragment>
     )
 };
 
-export default Users;
+export default ChooseStory;

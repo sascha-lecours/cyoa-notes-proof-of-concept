@@ -5,10 +5,10 @@ const storyController = require('../controllers/storyController');
 const router = express.Router();
 
 
-// TODO: make these point to services instead
-
 router.post('/', storyController.createStory);
 router.get('/', storyController.getStories);
+router.get('/userid/:uid', storyController.getStorySessionsByUserID);
+router.get('/storyid/:sid' , storyController.getStoryById);
 
 router.post('/name', storyController.getStoryByName);
 router.post('/session/start', storyController.startStorySession);

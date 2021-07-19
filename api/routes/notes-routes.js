@@ -14,12 +14,17 @@ router.get('/userid/:uid', noteController.getNotesByUserId);
 router.post('/location', noteController.getNotesByLocation);
 
 
-router.post( // TODO: add validation
+router.post( // TODO: add more validation for creator etc
     '/',
+    [
+        check('content')
+            .not()
+            .isEmpty(),
+    ],
     noteController.createNote
 );
 
-router.delete('/:nid', noteController.deleteNote)
+router.delete('/delete/:nid', noteController.deleteNote)
 
 
 /* // Still TODO

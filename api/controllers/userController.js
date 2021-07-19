@@ -80,7 +80,10 @@ const login = async (req, res, next) => {
         return next(error);
     }
 
-    res.json({message: 'User logged in'});
+    res.json({
+        message: 'User logged in', 
+        user: existingUser.toObject({ getters: true }) 
+    });
 }
 
 const getUserById = async (req, res, next) => {

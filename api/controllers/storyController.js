@@ -1,16 +1,22 @@
 const libinkle = require('libinkle');
 
+const { validationResult } = require('express-validator');
+
 const Story = require('../models/stories');
 const StorySession = require('../models/storySession');
 const NoteService = require('../services/noteService');
 const StoryService = require('../services/storyService');
 const StorySessionService = require('../services/storySessionService');
+const User = require('../models/user');
+
+const HttpError = require('../models/httpError');
 
 
 const createStory = async (req, res, next) => {
     const createdStory = new Story({
         name: req.body.name,
-        story: req.body.story
+        story: req.body.story,
+        image: req.body.image
     });
     const result = await createdStory.save();
     console.log("Created Story with ID: " + createdStory.id);
@@ -20,7 +26,7 @@ const createStory = async (req, res, next) => {
 const getStories = async (req, res, next) => { // Array of all stories. Extremely big.
     const stories = await Story.find().exec(); // Mongoose find() is array by default // exec() makes it a 'real' promise
     
-    res.json(stories);
+    res.json({ stories: stories.map(story => story.toObject({getters: true })) });
 };
 
 
@@ -43,6 +49,29 @@ const getStoryByName = async (req, res, next) => {
     const storyName = req.body.storyName;
     const returnedStory = await StoryService.getStoryByName(storyName);
     res.status(200).json({ story: returnedStory });
+
+}
+
+const getStoryById = async (req, res, next) => {
+    const storyId = req.params.sid;
+    let story; 
+
+    try{
+        story = await Story.findById(storyId); // Not a "real" promise, but Mongoose still allows async/await
+    } catch (err) {
+        const error = new HttpError(
+            'Error when attempting to find story', 500
+        );
+        return next(error);
+    }
+    
+    if(!story) {
+        const error =  new HttpError('Could not find a story with the specified ID.',
+        404
+        );
+        return next(error);
+    }
+    res.json({ story: story.toObject({ getters: true }) });
 
 }
 
@@ -73,10 +102,36 @@ const getStorySessionByNames = async (req, res, next) => {
     res.json(result);
 }
 
+
+const getStorySessionsByUserID = async (req, res, next) => {
+
+    const userId = req.params.uid;
+    let userWithSessions;
+
+    try {
+        userWithSessions = await Users.findById(userId).populate('storySessions');
+    } catch (err) {
+        const error = new HttpError(
+            'Fetching storySessions by user ID failed, please try again later',
+            500
+        );
+        return next(error);
+    }
+
+    if(!userWithSessions || userWithSessions.storySessions.length === 0) {
+        return next(
+            new HttpError('Could not find storySessions for the provided user ID.', 404)
+        );
+    };
+
+    res.json({ storySessions: userWithSessions.storySessions.map(storySession => storySession.toObject({ getters: true })) });
+}
+
+
 // POST request with the username and story of a storysession along with a stitchname for the destination, all as one object.
 const moveStorySession = async (req, res, next) => {
     console.log(`Parsing request to move story: ${JSON.stringify(req.body)}`)
-    // Will take a story session's idusername and story, and a destination, make the inkle object using the new destination and that session's flaglist (if any), 
+    // Will take a story session's username and story (ID instead?), and a destination, make the inkle object using the new destination and that session's flaglist (if any), 
     const userName = req.body.userName;
     const storyName = req.body.storyName;
     const destinationStitch = req.body.destinationStitch;
@@ -141,3 +196,5 @@ exports.startStorySession = startStorySession;
 exports.getStoryFrontEndObject = getStoryFrontEndObject; // TODO: this might need to instead be a service? (evaluate need for this to be used in other controllers)
 exports.getStorySessionByNames = getStorySessionByNames;
 exports.moveStorySession = moveStorySession;
+exports.getStorySessionsByUserID = getStorySessionsByUserID;
+exports.getStoryById = getStoryById;

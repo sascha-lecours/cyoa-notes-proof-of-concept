@@ -17,6 +17,7 @@ const getStorySessionByNames = async (userName, storyName) => {
     return await fetchedSession[0];
 }
 
+
 // payload: newFlagList, currenStitch, //TODO: maybe a boolean for story completed -> remove session?
 const updateStorySessionById = async (id, payload) => {
     console.log(`Update session for ID: ${id}, payload: ${JSON.stringify(payload)}`);

@@ -9,11 +9,20 @@ const NavLinks = props => {
 
   return (
     <ul className="nav-links">
+      {auth.isLoggedIn && (
+        <li>
+          <NavLink to="/stories" exact>
+            BEGIN A NEW STORY
+          </NavLink>
+        </li>
+      )}
+      {auth.isLoggedIn && (
       <li>
-        <NavLink to="/" exact>
-          PLAY A STORY
+        <NavLink to="/storySessions" exact>
+          CONTINUE A STORY
         </NavLink>
       </li>
+      )}
       <li>
         <NavLink to="/users" exact>
           ALL USERS

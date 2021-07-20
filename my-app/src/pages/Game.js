@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { NavLink } from 'react-router-dom';
 
@@ -6,6 +6,7 @@ import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { Book } from '../components/Book';
 
+import { AuthContext } from '../util/auth-context';
 import { getDebugSettings } from '../services/AppSettingsService';
 import { getMarginNotes } from '../services/NotesService.js';
 import { getStoryText, resetStory, getCurrentStitch, getCurrentStoryName, moveStoryAndGetFrontend } from '../services/StoryService.js';
@@ -16,9 +17,8 @@ import '../App.css';
 
 const Game = () => {
 
-  const [currentStoryTitle, setCurrentStoryTitle] = useState(null);
+  const [currentStoryId, setCurrentStoryId] = useState(null);
   const [currentStitchName, setCurrentStitchName] = useState(null);
-  const [currentUserName, setCurrentUserName] = useState(null); // TODO: hook this up properly
   const [marginNotes, setMarginNotes] = useState([]);
   const [storyText, setStoryText] = useState([]);
   const [choices, setChoices] = useState({});
@@ -28,12 +28,11 @@ const Game = () => {
   
   const [showDebugTools, setShowDebugTools] = useState(false);
   
+  const auth = useContext(AuthContext);
 
   useEffect(() => {
     getCurrentStoryName()
-    .then(storyTitle => setCurrentStoryTitle(storyTitle));
-    
-    setCurrentUserName("testuser02"); // TODO: this is only a placeholder username for testing
+    .then(storyTitle => setCurrentStoryId(storyTitle));
   }, []);
 
   // The frontend state object (frontEndObject) will be saved in the method that moves the story, and then drawn from here.
@@ -49,13 +48,10 @@ const Game = () => {
     getCurrentStitch()
     .then(stitchName => setCurrentStitchName(stitchName));
 
-    if(currentStoryTitle && currentStitchName){
-      const currentLocation = { location: { story: currentStoryTitle, stitch: currentStitchName }}
-      //console.log(`retieving notes from ${currentStoryTitle}, stitch: ${currentStitchName}`);
-      //console.log(`... sending the following to getMarginNotes: ${JSON.stringify(currentLocation)}`);
+    if(currentStoryId && currentStitchName){
+      const currentLocation = { location: { story: currentStoryId, stitch: currentStitchName }}
       getMarginNotes(currentLocation)
       .then(fetchedNotes => {
-        //console.log(`...Fetched these notes back: ${JSON.stringify(fetchedNotes)}`);
         const newNotes = fetchedNotes.fetchedNotes;
         setMarginNotes(newNotes);
       });
@@ -87,8 +83,7 @@ const Game = () => {
   }, [needToUpdate]);
 
   const makeChoiceAndUpdate = async (destination) => {
-    //makeChoice(destination);
-    let frontEndObj = await moveStoryAndGetFrontend(currentUserName, currentStoryTitle, destination); // TODO: needs to be given userName and storyName as well
+    let frontEndObj = await moveStoryAndGetFrontend(auth.userId, currentStoryId, destination);  // TODO: get current story ID better
     setNeedToUpdate(true);
     setFrontEndObject(frontEndObj);
   }
@@ -126,7 +121,7 @@ const GetCurrentStitchButton = () => {
             choicesList={choicesList} 
             makeChoice={makeChoiceAndUpdate}
             currentStitch={currentStitchName}
-            currentStory={currentStoryTitle}
+            currentStory={currentStoryId}
             setFrontEndObject={setFrontEndObject}
           ></Book>
         </div>

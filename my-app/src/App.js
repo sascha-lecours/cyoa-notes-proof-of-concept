@@ -19,6 +19,7 @@ import { AuthContext } from './util/auth-context.js';
 const App = () => {
   const [isLoggedIn, setIsLoggedin] = useState(false);
   const [userId, setUserId] = useState(null);
+  //const [sessionId, setSessionId] = useState(null);
 
   const login = useCallback((uid) => {
     setIsLoggedin(true);

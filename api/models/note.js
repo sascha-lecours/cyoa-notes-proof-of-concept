@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const noteSchema = new Schema({
     location: {
-        story: { type: String, required: true },
+        story: { type: mongoose.Types.ObjectId, required: true, ref: 'Story' },
         stitch: { type: String, required: true }
     },
     creator: { type: mongoose.Types.ObjectId, required: true, ref: 'User' },

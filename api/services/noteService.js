@@ -3,14 +3,14 @@ const HttpError = require('../models/httpError');
 
 const getNotesByLocation = async ( location ) => {
     console.log(`get notes for : ${JSON.stringify(location)}`);
-    const storyName = location.story;
+    const storyId = location.story;
     const stitchName = location.stitch;
     
     let fetchedNotes = [];
     try{
         fetchedNotes = await Note.find({ 
             location:{
-                story: storyName,
+                story: storyId,
                 stitch: stitchName
         }
     })

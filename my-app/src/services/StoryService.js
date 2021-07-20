@@ -26,15 +26,15 @@
 
 // Needs: req.body.userName, req.body.storyName, req.body.destinationStitch
 
-export async function moveStoryAndGetFrontend(userName, storyName, destinationStitch) {
+export async function moveStoryAndGetFrontend(userId, storyId, destinationStitch) {
     try{
-        console.log(`Moving story forward. User: ${JSON.stringify(userName)} Story: ${JSON.stringify(storyName)} Stitch: ${JSON.stringify(destinationStitch)}`);
+        console.log(`Moving story forward. User: ${JSON.stringify(userId)} Story: ${JSON.stringify(storyId)} Stitch: ${JSON.stringify(destinationStitch)}`);
         const response = await fetch(`/api/story/move`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: {
-                "userName" : userName, 
-                "storyName" : storyName, 
+                "userId" : userId, 
+                "storyID" : storyId, 
                 "destinationStitch" : destinationStitch
             }
           })

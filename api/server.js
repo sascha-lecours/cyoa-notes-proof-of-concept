@@ -52,7 +52,7 @@ const resetStory = () => {
 
 // Placeholders
 
-const placeHolderStoryTitle = "Hunt for M. Big Foot"; // TODO: This is a placeholder until story IDs are finalized
+const placeHolderStoryTitle = "60f726c3d9f8ac19d894f2d9"; 
 
 // placeholders end
 

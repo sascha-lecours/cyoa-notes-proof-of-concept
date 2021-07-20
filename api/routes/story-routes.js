@@ -13,7 +13,7 @@ router.get('/storyid/:sid' , storyController.getStoryById);
 router.post('/name', storyController.getStoryByName);
 router.get('/session', storyController.getStorySessions);
 router.post('/session/start', storyController.startStorySession);
-router.post('/session/names', storyController.getStorySessionByNames);
+router.post('/session/ids', storyController.getStorySessionByIds);
 
 router.post('/session/move', storyController.moveStorySession);
 

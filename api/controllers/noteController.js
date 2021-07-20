@@ -61,7 +61,7 @@ const createNote = async (req, res, next) => {
         );
         return next(error);
     }
-    console.log(`Created a note on story "${location.story}"`);
+    console.log(`Created a note on storyId: "${location.story}"`);
     res.status(201).json({ note: createdNote });
 }
 
@@ -88,7 +88,8 @@ const getNoteById = async (req, res, next) => {
 }
 
 const getNotesByLocation = async (req, res, next) => {
-    const fetchedNotes = await NoteService.getNotesByLocation(req.body.location);
+    const { location } = req.body;
+    const fetchedNotes = await NoteService.getNotesByLocation(location);
     res.status(200).json( fetchedNotes );
 }
 

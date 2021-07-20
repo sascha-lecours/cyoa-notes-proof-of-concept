@@ -114,10 +114,10 @@ const GetCurrentStitchButton = () => {
 }
 
 // Debugging tools end.
-
+// Removed <Header />
     return (
       <div className="Game">
-        <Header />
+        
         <div className="centralBody">
           <Book 
             marginNotes={marginNotes} 

@@ -11,6 +11,7 @@ router.get('/userid/:uid', storyController.getStorySessionsByUserID);
 router.get('/storyid/:sid' , storyController.getStoryById);
 
 router.post('/name', storyController.getStoryByName);
+router.get('/session', storyController.getStorySessions);
 router.post('/session/start', storyController.startStorySession);
 router.post('/session/names', storyController.getStorySessionByNames);
 

@@ -12,7 +12,7 @@ import { useForm } from '../util/hooks/formHooks';
 import { useHttpClient } from '../util/hooks/httpHook';
 import { AuthContext } from '../util/auth-context';
 
-const NoteAddingArea = ({ currentStitch, currentStory }) => {
+const NoteAddingArea = ({ currentStitch, currentStory, toggleShowNoteAdder }) => {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const auth = useContext(AuthContext);
 
@@ -29,15 +29,20 @@ const NoteAddingArea = ({ currentStitch, currentStory }) => {
     const noteSubmitHandler = async event => {
         event.preventDefault();
         try {
-            await sendRequest('http://localhost:3080/api/notes', 'POST', JSON.stringify({
-                creator: auth.userId,
-                location: {
-                    story: currentStory,
-                    stitch: currentStitch
-                },
-                content: formState.inputs.content.value
-            }));
-            // Make sure to close the note-adding form if necessary
+            await sendRequest(
+                'http://localhost:3080/api/notes', 
+                'POST', 
+                JSON.stringify({
+                    creator: auth.userId,
+                    location: {
+                        story: currentStory,
+                        stitch: currentStitch
+                    },
+                    content: formState.inputs.content.value
+                }),
+                { 'Content-Type': 'application/json' }
+            );
+            toggleShowNoteAdder();
         } catch (err) {
 
         }

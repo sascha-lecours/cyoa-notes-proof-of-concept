@@ -92,6 +92,21 @@ const getNotesByLocation = async (req, res, next) => {
     res.status(200).json( fetchedNotes );
 }
 
+const getNotes = async (req, res, next) => {
+    let notes;
+    try {
+        notes = await Note.find({}); // Empty object for projection.
+    } catch (err) {
+        const error = new HttpError(
+            'Fetching notes failed, please try again later.',
+            500
+        );
+        return next(error);
+    }
+    res.json({ notes: notes.map(note => note.toObject({getters: true })) });
+
+}
+
 const getNotesByUserId = async (req, res, next) => {
 
     const userId = req.params.uid;
@@ -168,3 +183,4 @@ exports.createNote = createNote;
 exports.updateNote = updateNote;
 exports.deleteNote = deleteNote;
 exports.getNotesByUserId = getNotesByUserId;
+exports.getNotes = getNotes;

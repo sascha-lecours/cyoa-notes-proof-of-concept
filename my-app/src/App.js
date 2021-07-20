@@ -7,6 +7,7 @@ import Auth from './pages/Auth';
 import Users from './pages/Users';
 import ChooseStory from './pages/ChooseStory.js';
 import ChooseSession from './pages/ChooseSession.js';
+import UserNotes from './pages/UserNotes.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { AuthContext } from './util/auth-context.js';
@@ -30,7 +31,6 @@ const App = () => {
   }, []);
 
   let routes;
-  // TODO: Add "my notes" route to logged in switch
   // TODO: Change "/" path for authenticated route to be story-choose rather than game
   if (isLoggedIn) {
     routes = (
@@ -41,7 +41,10 @@ const App = () => {
         <Route path="/users" exact>
           <Users />
         </Route>
-        <Route path="/storySessions" exact>
+        <Route path="/my-notes" exact>
+          <UserNotes />
+        </Route>
+        <Route path="/story-sessions" exact>
           <ChooseSession />
         </Route>
         <Route path="/stories" exact>

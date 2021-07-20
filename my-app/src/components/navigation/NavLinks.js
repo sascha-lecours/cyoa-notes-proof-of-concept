@@ -18,7 +18,7 @@ const NavLinks = props => {
       )}
       {auth.isLoggedIn && (
       <li>
-        <NavLink to="/storySessions" exact>
+        <NavLink to="/story-sessions" exact>
           CONTINUE A STORY
         </NavLink>
       </li>
@@ -30,7 +30,7 @@ const NavLinks = props => {
       </li>
       {auth.isLoggedIn && (
         <li>
-          <NavLink to="/u1/notes">MY NOTES</NavLink>
+          <NavLink to="/my-notes">MY NOTES</NavLink>
         </li>
       )}
       {!auth.isLoggedIn && (

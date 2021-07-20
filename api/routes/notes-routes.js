@@ -7,7 +7,7 @@ const router = express.Router();
 // TODO: make these point to services instead
 
 
-
+router.get('/', noteController.getNotes);
 router.get('/id/:nid', noteController.getNoteById);
 router.get('/userid/:uid', noteController.getNotesByUserId);
 

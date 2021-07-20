@@ -22,7 +22,13 @@ export const MarginArea = ({ marginNotes, currentStitch, currentStory }) => {
             <div className="Margin Area" style={marginAreaStyle}>
                 <MarginNotes marginNotes={marginNotes} />
                 <button className="btn btn-outline-primary" onClick={toggleShowNoteAdder}>Leave a Note Here</button>
-                {showNoteAdder && <NoteAddingArea currentStitch={currentStitch} currentStory={currentStory} />}
+                {showNoteAdder && 
+                    <NoteAddingArea 
+                        currentStitch={currentStitch} 
+                        currentStory={currentStory} 
+                        toggleShowNoteAdder={setshowNoteAdder} 
+                    />
+                }
             </div>
         )
 }

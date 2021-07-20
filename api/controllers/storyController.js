@@ -7,16 +7,19 @@ const StorySession = require('../models/storySession');
 const NoteService = require('../services/noteService');
 const StoryService = require('../services/storyService');
 const StorySessionService = require('../services/storySessionService');
-const User = require('../models/user');
+const Users = require('../models/user');
+const mongoose = require('mongoose');
 
 const HttpError = require('../models/httpError');
 
 
 const createStory = async (req, res, next) => {
+    const { name, story, image } = req.body
+
     const createdStory = new Story({
-        name: req.body.name,
-        story: req.body.story,
-        image: req.body.image
+        name,
+        story,
+        image
     });
     const result = await createdStory.save();
     console.log("Created Story with ID: " + createdStory.id);
@@ -82,14 +85,60 @@ const getInitialStitchByName = async (req, res, next) => {
 
 // From a POST: Loads a "blank" run of the story and saves it to the database
 const startStorySession = async (req, res, next) => {
-    let newStorySession = new StorySession({
-        userName: req.body.userName,
-        storyName: req.body.storyName,
-        sessionFlaglist: []
+
+    const { creator, story } = req.body;
+    
+    // DEBUG
+    console.log('Starting new story session');
+
+    const createdSession = new StorySession({
+        userName: 'lol',
+        storyName: 'lol3',
+        creator,
+        story,
+        sessionLastActiveStitch : 'placeholder', // TODO: figure out if you can pass a null value here by altering the model
+        sessionFlagList: []
     });
-    const result = await newStorySession.save();
-    console.log("Created new StorySession for user " + newStorySession.userName + " playing story " + newStorySession.storyName);
-    res.json(result);
+
+    let user;
+
+    try {
+        user = await Users.findById(creator);
+    } catch (err) {
+        const error = new HttpError(
+            'Creating storysession failed (error when finding ID)',
+            500
+        );
+        return next(error);
+    }
+
+    if (!user) {
+        const error = new HttpError(
+            'Could not find user for provided ID', 
+            404
+        );
+        return next(error);
+    }
+    console.log('Beginning session transaction')
+    try {
+        const sess = await mongoose.startSession();
+        console.log('Session started.');
+        sess.startTransaction();
+        await createdSession.save({ session: sess });
+        user.storySessions.push(createdSession);
+        await user.save({ session: sess });
+        await sess.commitTransaction();
+
+    } catch (err) {
+        const error = new HttpError(
+            'Creating Storysession has failed',
+            500
+        );
+        return next(error);
+    }
+    console.log(`Created a Storysession on story "${story}"`);
+    res.status(201).json({ storySession: createdSession });
+
 }
 
 // takes a POST with userName and storyName
@@ -100,6 +149,21 @@ const getStorySessionByNames = async (req, res, next) => {
 
     const result = await StorySessionService.getStorySessionByNames(userName, storyName);
     res.json(result);
+}
+
+const getStorySessions = async (req, res, next) => {
+    let storySessions;
+    try {
+        storySessions = await StorySession.find({}); // Empty object for projection.
+    } catch (err) {
+        const error = new HttpError(
+            'Fetching story sessions failed, please try again later.',
+            500
+        );
+        return next(error);
+    }
+    res.json({ storySessions: storySessions.map(session => session.toObject({getters: true })) });
+
 }
 
 
@@ -129,6 +193,7 @@ const getStorySessionsByUserID = async (req, res, next) => {
 
 
 // POST request with the username and story of a storysession along with a stitchname for the destination, all as one object.
+// TODO: although the individual sessions in here have try-catch and error handling, create higher-level error handling here and transactions
 const moveStorySession = async (req, res, next) => {
     console.log(`Parsing request to move story: ${JSON.stringify(req.body)}`)
     // Will take a story session's username and story (ID instead?), and a destination, make the inkle object using the new destination and that session's flaglist (if any), 
@@ -138,18 +203,27 @@ const moveStorySession = async (req, res, next) => {
 
     console.log(`Moving story and getting frontend. username: ${userName} story: ${storyName} destination: ${destinationStitch}`);
 
-    const rawStoryText = await StoryService.getRawStoryTextByName(storyName);
+    let rawStoryText;
+    let fullSession;
+    let sessionFlagList;
+    let sessionId;
+    try {
+    rawStoryText = await StoryService.getRawStoryTextByName(storyName);
     
     // TODO: Should this also create a new session if one doesn't already exist?
-    const fullSession = await StorySessionService.getStorySessionByNames(userName, storyName);
-    const sessionFlagList = await fullSession.sessionFlaglist;
-    const sessionId = await fullSession._id;
+    fullSession = await StorySessionService.getStorySessionByNames(userName, storyName);
+    sessionFlagList = await fullSession.sessionFlaglist;
+    sessionId = await fullSession._id;
 
+    } catch (err) {
+        return next(err); // TODO: replace this with httpError object and write its code etc.
+    }
+    
     console.log("now making inkle object from raw text...")
     // Inklewriter initialization
     let inkle = new libinkle({ source: rawStoryText });
 
-    //Debug:
+    // Debug:
     console.log('starting new inkle at stitch: ' + destinationStitch + ' with flaglist: ' + sessionFlagList);
     
     inkle.start(destinationStitch, sessionFlagList);
@@ -158,24 +232,40 @@ const moveStorySession = async (req, res, next) => {
     const paragraphList = inkle.getText();
     const choices = inkle.getChoices();
     const choicesList = inkle.getChoicesByName();
-    const currentStitch = inkle.getCurrentStitchName(); // This may need to be made async so that this happens in the correct order
+    const currentStitch = inkle.getCurrentStitchName(); // TODO: This MAY need to be made async so that this happens in the correct order
     const newFlagList = inkle.getFlagList();
 
     // and then fetch the notes for its new location:
     const location = {
         story: storyName, stitch: currentStitch
     }
-
-    const fetchedNotes = await NoteService.getNotesByLocation(location);
     
+    let fetchedNotes;
+    try {
+        fetchedNotes = await NoteService.getNotesByLocation(location);
+        console.log(`fetched these notes: ${JSON.stringify(fetchedNotes)}`);
+    } catch (err) {
+        return next(err); // TODO: replace this with httpError object and write its code etc.
+    }
+
+
+    // Update the story session in question with the new flaglist and currentStitch
     const sessionPayload = { currentStitch, newFlagList }
-    const updatedSession = await StorySessionService.updateStorySessionById(sessionId, sessionPayload);
+    let updatedSession;
+    try {
+        updatedSession = await StorySessionService.updateStorySessionById(sessionId, sessionPayload);
+    } catch {
+        return next(err); // TODO: replace this with httpError object and write its code etc.
+    }
+    
 
 
     // And finally it will send back the frontend object that corresponds to the story info and notes for this destination.
     let frontEndObject;
 
     // Populate frontEndObject with all the notes and story details needed
+    console.log(`fetched these notes: ${JSON.stringify(fetchedNotes)}`);
+
     frontEndObject = {
         paragraphList: paragraphList,
         choices: choices,
@@ -183,7 +273,7 @@ const moveStorySession = async (req, res, next) => {
         fetchedNotes: fetchedNotes.fetchedNotes
     }
 
-    await res.json(frontEndObject);
+    res.json(frontEndObject);
 }
 
 
@@ -198,3 +288,4 @@ exports.getStorySessionByNames = getStorySessionByNames;
 exports.moveStorySession = moveStorySession;
 exports.getStorySessionsByUserID = getStorySessionsByUserID;
 exports.getStoryById = getStoryById;
+exports.getStorySessions = getStorySessions;

@@ -131,9 +131,9 @@ const startStorySession = async (req, res, next) => {
         return next(error);
     }
     console.log(`Created a Storysession on story "${story}"`);
-    res.status(201).json({ storySession: createdSession });
+    res.status(201).json({ storySession: createdSession.toObject({getters: true }) });
 
-}
+} 
 
 // takes a POST with userName and storyName
 const getStorySessionByIds = async (req, res, next) => {
@@ -236,6 +236,48 @@ const getStorySessionsByUserID = async (req, res, next) => {
 }
 
 
+const deleteStorySession = async (req, res, next) => {
+
+    const storySessionId = req.params.ssid;
+
+    let storySession;
+    try {
+        storySession = await StorySession.findById(storySessionId).populate('creator'); // Using populate() to refer to a doc in another collection using the relations in the models.
+    } catch (err) {
+        const error = new HttpError(
+            'Something went wrong while attempting to a delete a storySession. (1)',
+            500
+        );
+        return next(error);
+    }
+
+    if (!storySession) {
+        const error = new HttpError(
+            'No Story Session found for this ID.',
+            404
+        );
+        return next(error);
+    }
+
+    try {
+        const sess = await mongoose.startSession();
+        sess.startTransaction();
+        await storySession.remove({ session: sess });
+        storySession.creator.storySessions.pull(storySession); // This works because creator was populated() earlier so creator's fields are available
+        await storySession.creator.save({ session: sess });
+        await sess.commitTransaction();
+    } catch (err) {
+        const error = new HttpError(
+            'Something went wrong while attempting to a delete a storySession. (2)',
+            500
+        );
+        return next(error);
+    }
+
+    res.status(200).json({ message: 'Deleted storySession.' });
+}
+
+
 // POST request with the username and story of a storysession along with a stitchname for the destination, all as one object.
 // TODO: although the individual sessions in here have try-catch and error handling, create higher-level error handling here and transactions
 const moveStorySession = async (req, res, next) => {
@@ -332,3 +374,4 @@ exports.moveStorySession = moveStorySession;
 exports.getStorySessionsByUserID = getStorySessionsByUserID;
 exports.getStoryById = getStoryById;
 exports.getStorySessions = getStorySessions;
+exports.deleteStorySession = deleteStorySession;

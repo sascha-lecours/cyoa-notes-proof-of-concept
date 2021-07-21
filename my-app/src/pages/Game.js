@@ -101,7 +101,7 @@ const ResetButton = () => {
 
 const GetCurrentStitchButton = () => {
   return (
-    <button type="button" className="btn btn-info"onClick={(e)=>{
+    <button type="button" className="btn btn-info" onClick={(e)=>{
       getCurrentStitch();
       setNeedToUpdate(true);
     }}>Update notes</button>

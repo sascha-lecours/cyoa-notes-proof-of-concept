@@ -13,9 +13,28 @@ import { AuthContext } from '../util/auth-context';
 const ChooseStory = () => {
 
     const [loadedStories, setLoadedStories] = useState();
+    const [newStorySession, setNewStorySession] = useState();
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-    const auth = useContext(AuthContext);
+    
+
+    // This function will be passed down to the individual clickable story components
+    const selectStory = async (sid, uid) => {
+        try {
+            const responseData = await sendRequest(
+                'http://localhost:3080/api/story/session/start',
+                'POST',
+                JSON.stringify({
+                    creator: uid,
+                    story: sid
+                }),
+                { 'Content-Type': 'application/json' }
+            );
+            setNewStorySession(responseData._id);
+        } catch (err) {
+            // Error handled in sendRequest
+        }
+    }
 
     useEffect(()=>{
         const fetchStories = async () => {

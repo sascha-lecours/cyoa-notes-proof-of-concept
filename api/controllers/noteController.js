@@ -153,7 +153,7 @@ const deleteNote = async (req, res, next) => {
 
     if (!note) {
         const error = new HttpError(
-            'No place found for this ID.',
+            'No note found for this ID.',
             404
         );
         return next(error);

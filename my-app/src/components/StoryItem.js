@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Avatar from './Avatar';
 import Card from './Card';
 import './appearance/StoryItem.css';
+import { useHttpClient } from '../util/hooks/httpHook';
 
 
 
@@ -13,6 +14,11 @@ import './appearance/StoryItem.css';
 
 
 const StoryItem = props => {
+
+  const createNewStorySession = (sid) => {
+
+  }
+
   return (
     <li className="story-item">
       <Card className="story-item__content">
@@ -21,6 +27,17 @@ const StoryItem = props => {
           </div>
           <div className="story-item__info">
             <h2>{props.name}</h2>
+          </div>
+          <div className="story-item__info">
+            <button 
+              type="button" 
+              className="btn btn-info" 
+              onClick={(e)=>{
+                createNewStorySession(props.id);
+                // TODO: Handle redirect here
+            }}>
+              Begin
+            </button>
           </div>
           {props.shortText && (
             <div className="story-item__info">

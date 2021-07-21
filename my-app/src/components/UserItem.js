@@ -12,7 +12,6 @@ const UserItem = props => {
   return (
     <li className="user-item">
       <Card className="user-item__content">
-        <Link to={`/${props.id}/notes`}>
           <div className="user-item__image">
             <Avatar image={props.image} alt={props.name} />
           </div>
@@ -22,7 +21,6 @@ const UserItem = props => {
               {props.noteCount.length} {props.noteCount.length === 1 ? 'Note' : 'Notes'}
             </h3>
           </div>
-        </Link>
       </Card>
     </li>
   );

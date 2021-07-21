@@ -5,12 +5,17 @@ import LoadingSpinner from '../components/appearance/LoadingSpinner';
 import { useHttpClient } from '../util/hooks/httpHook';
 import StoryList from '../components/StoryList';
 
-// TODO: Make a page for viewing all of a user's notes, with consideration for whether it's the currently auth'd user
+import { AuthContext } from '../util/auth-context';
 
+
+// Display possible stories. On each one, selecting it will start a new session (prompting to resume or overwrite if existing session for that story)
+// Starting a new session in this way will update the authcontext's storySessionId and redirect to the Game page.
 const ChooseStory = () => {
 
     const [loadedStories, setLoadedStories] = useState();
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
+    const auth = useContext(AuthContext);
 
     useEffect(()=>{
         const fetchStories = async () => {

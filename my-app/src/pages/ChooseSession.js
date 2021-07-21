@@ -5,14 +5,18 @@ import LoadingSpinner from '../components/appearance/LoadingSpinner';
 import { useHttpClient } from '../util/hooks/httpHook';
 import StoryList from '../components/StoryList';
 
-// TODO: Make this take the current authorized user's ID!
+import { AuthContext } from '../util/auth-context';
 
 
+// TODO: This is a work in progress and isn't yet hooked up
 
 const ChooseSession = () => {
 
     const [loadedSessions, setLoadedSessions] = useState();
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
+    const auth = useContext(AuthContext);
+    const userId = auth.userId; // TODO: use this in the fetch below
 
     useEffect(()=>{
         const fetchStorySessions = async () => {

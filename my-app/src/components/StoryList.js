@@ -23,6 +23,7 @@ const StoryList = props => {
           id={story.id}
           image={story.image}
           name={story.name}
+          shortText={story.shortText}
         />
       ))}
     </ul>

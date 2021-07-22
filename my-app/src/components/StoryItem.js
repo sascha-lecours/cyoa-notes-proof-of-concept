@@ -3,10 +3,14 @@ import { Link } from 'react-router-dom';
 
 import Avatar from './Avatar';
 import Card from './Card';
-import './appearance/StoryItem.css';
+import ErrorModal from './appearance/ErrorModal';
+import LoadingSpinner from './appearance/LoadingSpinner';
+
 import { useHttpClient } from '../util/hooks/httpHook';
 import { AuthContext } from '../util/auth-context';
 import { StorySessionContext } from '../util/storySession-context';
+
+import './appearance/StoryItem.css';
 
 
 
@@ -19,26 +23,29 @@ const StoryItem = props => {
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
-  const storySessionContext = useContext(StorySessionContext);
+  const ssContext = useContext(StorySessionContext);
 
-  const createNewStorySession = async (sid) => {
+  const createNewStorySession = async (storyId) => {
     try {
       const responseData = await sendRequest(
         `http://localhost:3080/api/story/session/start`,
         'POST',
         JSON.stringify({
           creator: auth.userId,
-          story: sid
+          story: storyId
         }),
         { 'Content-Type': 'application/json' }
       );
-      console.log(responseData);
+      ssContext.enterStorySession(responseData.storySession.id);
+      // TODO: Return response value here in case it's ever needed?
     } catch (err) {}
   }
 
   return (
     <li className="story-item">
+      <ErrorModal error={error} onClear={clearError} />
       <Card className="story-item__content">
+          {isLoading && <LoadingSpinner asOverlay />} 
           <div className="story-item__image">
             <Avatar image={props.image} alt={props.name} />
           </div>
@@ -51,7 +58,7 @@ const StoryItem = props => {
               className="btn btn-info" 
               onClick={(e)=>{
                 createNewStorySession(props.id);
-                // TODO: Handle redirect here
+                // TODO: Handle redirect to GAME page here
             }}>
               Begin
             </button>

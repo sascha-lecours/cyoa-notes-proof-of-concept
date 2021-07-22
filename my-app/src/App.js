@@ -51,6 +51,9 @@ const App = () => {
     routes = (
       <Switch>
         <Route path="/" exact>
+          <ChooseStory />
+        </Route>
+        <Route path="/game" exact>
           <Game />
         </Route>
         <Route path="/users" exact>
@@ -62,9 +65,7 @@ const App = () => {
         <Route path="/story-sessions" exact>
           <ChooseSession />
         </Route>
-        <Route path="/stories" exact>
-          <ChooseStory />
-        </Route>
+
         <Redirect to="/" />
       </Switch>
     );

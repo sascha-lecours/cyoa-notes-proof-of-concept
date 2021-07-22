@@ -11,24 +11,38 @@ import UserNotes from './pages/UserNotes.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { AuthContext } from './util/auth-context.js';
+import { StorySessionContext } from './util/storySession-context.js';
 
 
 
 // TODO: remaining nav options: view my notes. (bonus: continue previous story)
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedin] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState(null);
-  //const [sessionId, setSessionId] = useState(null);
 
   const login = useCallback((uid) => {
-    setIsLoggedin(true);
+    setIsLoggedIn(true);
     setUserId(uid);
   }, []);
 
   const logout = useCallback(() => {
-    setIsLoggedin(false);
+    setIsLoggedIn(false);
     setUserId(null);
+  }, []);
+
+
+  const [isInStorySession, setIsInStorySession] = useState(false);
+  const [storySessionId, setStorySessionId] = useState(null);
+
+  const enterStorySession = useCallback((ssid) => {
+    setIsInStorySession(true);
+    setStorySessionId(ssid);
+  }, []);
+
+  const exitStorySession = useCallback(() => {
+    setIsInStorySession(false);
+    setStorySessionId(null);
   }, []);
 
   let routes;
@@ -85,12 +99,21 @@ const App = () => {
         logout: logout,  
       }}
     >
-      <Router>
-        <MainNavigation />
-        <main>
-          {routes}
-        </main>
-      </Router>
+      <StorySessionContext.Provider 
+        value={{
+          isInStorySession: isInStorySession, 
+          storySessionId: storySessionId, 
+          enterStorySession: exitStorySession, 
+          exitStorySession: exitStorySession,  
+        }}
+      >
+        <Router>
+          <MainNavigation />
+          <main>
+            {routes}
+          </main>
+        </Router>
+      </StorySessionContext.Provider>
     </AuthContext.Provider>
   );
 }

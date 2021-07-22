@@ -6,6 +6,7 @@ import Card from './Card';
 import './appearance/StoryItem.css';
 import { useHttpClient } from '../util/hooks/httpHook';
 import { AuthContext } from '../util/auth-context';
+import { StorySessionContext } from '../util/storySession-context';
 
 
 
@@ -18,6 +19,7 @@ const StoryItem = props => {
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
+  const storySessionContext = useContext(StorySessionContext);
 
   const createNewStorySession = async (sid) => {
     try {
@@ -32,7 +34,6 @@ const StoryItem = props => {
       );
       console.log(responseData);
     } catch (err) {}
-    
   }
 
   return (

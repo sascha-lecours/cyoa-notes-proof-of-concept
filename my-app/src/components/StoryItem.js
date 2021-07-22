@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import Avatar from './Avatar';
 import Card from './Card';
 import './appearance/StoryItem.css';
 import { useHttpClient } from '../util/hooks/httpHook';
+import { AuthContext } from '../util/auth-context';
 
 
 
@@ -15,8 +16,23 @@ import { useHttpClient } from '../util/hooks/httpHook';
 
 const StoryItem = props => {
 
-  const createNewStorySession = (sid) => {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const auth = useContext(AuthContext);
 
+  const createNewStorySession = async (sid) => {
+    try {
+      const responseData = await sendRequest(
+        `http://localhost:3080/api/story/session/start`,
+        'POST',
+        JSON.stringify({
+          creator: auth.userId,
+          story: sid
+        }),
+        { 'Content-Type': 'application/json' }
+      );
+      console.log(responseData);
+    } catch (err) {}
+    
   }
 
   return (

@@ -12,14 +12,14 @@ const NavLinks = props => {
       {auth.isLoggedIn && (
         <li>
           <NavLink to="/stories" exact>
-            BEGIN A NEW STORY
+            NEW STORY
           </NavLink>
         </li>
       )}
       {auth.isLoggedIn && (
       <li>
         <NavLink to="/story-sessions" exact>
-          CONTINUE A STORY
+          CONTINUE STORY
         </NavLink>
       </li>
       )}

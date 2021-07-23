@@ -1,5 +1,5 @@
 diff --git a/node_modules/libinkle/index.js b/node_modules/libinkle/index.js
-index df96c83..638b226 100644
+index df96c83..d82bf3f 100644
 --- a/node_modules/libinkle/index.js
 +++ b/node_modules/libinkle/index.js
 @@ -20,6 +20,7 @@ var storyModel = function (string, inkle) {
@@ -30,7 +30,22 @@ index df96c83..638b226 100644
          // is it a divert
          else if (_.has(value, 'divert')) {
              this.divert = value.divert;
-@@ -114,6 +128,9 @@ var stitchModel = function (stitch, name, inkle) {
+@@ -71,9 +85,12 @@ var stitchModel = function (stitch, name, inkle) {
+         else if (_.has(value, 'image')) {
+             this.image = value.image;
+         }
+-        // is it a flag
++        // is it a flag // Updated to only push unique flags to avoid duplicates accumulating
+         else if (_.has(value, 'flagName')) {
+-            flagList.push(value['flagName']);
++            if(flagList.indexOf(value['flagName']) === -1) {
++                flagList.push(value['flagName']);
++            }
++            //flagList.push(value['flagName']);
+         }
+         // it it a choice
+         else if (_.has(value, 'linkPath')) {
+@@ -114,6 +131,9 @@ var stitchModel = function (stitch, name, inkle) {
      this.getText = function () {
          return this.message;
      };
@@ -40,7 +55,7 @@ index df96c83..638b226 100644
      this.getChoices = function () {
          return this.choices;
      };
-@@ -128,10 +145,11 @@ var stitchModel = function (stitch, name, inkle) {
+@@ -128,10 +148,11 @@ var stitchModel = function (stitch, name, inkle) {
   * @class
   */
  inkle = function (options) {
@@ -53,7 +68,7 @@ index df96c83..638b226 100644
      var story = this.story || null;
      if (_.has(this, 'source')) {
          this.story = new storyModel(this.source, this);
-@@ -167,7 +185,8 @@ inkle.prototype.stats = function (story) {
+@@ -167,7 +188,8 @@ inkle.prototype.stats = function (story) {
   * @param {string} stitch_name  A stitch key  
   * @returns {Boolean}
   */
@@ -63,7 +78,7 @@ index df96c83..638b226 100644
      stitch_name = stitch_name || this.story.stats.initial;
      const initial = this.story.getStitch(stitch_name);
      this.currentStitches = this.getAllStitches(initial);
-@@ -186,8 +205,10 @@ inkle.prototype.getAllStitches = function (currentStitch) {
+@@ -186,8 +208,10 @@ inkle.prototype.getAllStitches = function (currentStitch) {
      this.paragraphList = [];
      this.choicesList = [];
      var nextStitch = '';
@@ -74,7 +89,7 @@ index df96c83..638b226 100644
          if (currentStitch.isChoice()) {
              choice = true;
              this.choicesList = currentStitch.getChoices();
-@@ -195,7 +216,7 @@ inkle.prototype.getAllStitches = function (currentStitch) {
+@@ -195,7 +219,7 @@ inkle.prototype.getAllStitches = function (currentStitch) {
              final = true;
          } else {
              nextStitch = currentStitch.nextStitch();
@@ -83,7 +98,7 @@ index df96c83..638b226 100644
          }
      }
      return true;
-@@ -270,5 +291,14 @@ inkle.prototype.isFinished = function () {
+@@ -270,5 +294,14 @@ inkle.prototype.isFinished = function () {
      return this.getChoicesByName().length === 0;
  };
  

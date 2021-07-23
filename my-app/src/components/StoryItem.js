@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import Avatar from './Avatar';
 import Card from './Card';
@@ -24,6 +24,7 @@ const StoryItem = props => {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const auth = useContext(AuthContext);
   const ssContext = useContext(StorySessionContext);
+  const [ needRedirect, setNeedRedirect ] = useState(false);
 
   const createNewStorySession = async (storyId) => {
     try {
@@ -37,6 +38,7 @@ const StoryItem = props => {
         { 'Content-Type': 'application/json' }
       );
       ssContext.enterStorySession(responseData.storySession.id);
+      setNeedRedirect(true);
       // TODO: Return response value here in case it's ever needed?
     } catch (err) {}
   }
@@ -58,7 +60,6 @@ const StoryItem = props => {
               className="btn btn-info" 
               onClick={(e)=>{
                 createNewStorySession(props.id);
-                // TODO: Handle redirect to GAME page here
             }}>
               Begin
             </button>
@@ -69,6 +70,7 @@ const StoryItem = props => {
             </div>
           )}
       </Card>
+      {needRedirect && <Redirect to="/game" />}
     </li>
   );
 };

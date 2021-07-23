@@ -32,15 +32,19 @@ const updateStorySessionById = async (id, payload) => {
         return error;
     }
 
-    fetchedSession.sessionFlagList = payload.newFlagList;
-    fetchedSession.sessionLastActiveStitch = payload.currentStitch;
-    
+
     try {
-        console.log(`updating session to use flaglist: ${fetchedSession.sessionFlagList} and last active stitch: ${fetchedSession.sessionLastActiveStitch}`);   
+        //console.log(`Modifying storysession with the payload contents: ${payload.newFlagList} and last active stitch ${payload.currentStitch}`);   
+        //fetchedSession.set({ sessionFlaglist : payload.newFlagList });
+        fetchedSession.set({ sessionFlaglist : [...payload.newFlagList] });
+        fetchedSession.sessionLastActiveStitch = payload.currentStitch;
+        //console.log(`Now updating session to use flaglist: ${fetchedSession.sessionFlagList} and last active stitch: ${fetchedSession.sessionLastActiveStitch}`);   
+        //console.log(`Post changes: Full session is: ${JSON.stringify(fetchedSession)}`);
         await fetchedSession.save();
+        //console.log(`Finally, Post save: Full session is: ${JSON.stringify(fetchedSession)}`);
     } catch (err) {
         const error = new HttpError(
-            'Error when attempting to find session by id', 500
+            'Error when attempting update session', 500
         );
         return error;
     }

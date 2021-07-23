@@ -104,7 +104,7 @@ const App = () => {
         value={{
           isInStorySession: isInStorySession, 
           storySessionId: storySessionId, 
-          enterStorySession: exitStorySession, 
+          enterStorySession: enterStorySession, 
           exitStorySession: exitStorySession,  
         }}
       >

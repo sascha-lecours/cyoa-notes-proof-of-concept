@@ -36,7 +36,7 @@ const getStories = async (req, res, next) => { // Array of all stories. Extremel
 // TODO: this may be redundant in combination with the story moving method which returns a frontend object.
 const getStoryFrontEndObject = async (req, res, next) => {
     /*{
-        storyName, // Not the inkle one,the DB one.
+        storyName, // Not the inkle one,the DB one. // <-- Should this be the ID instead of the name?
         paragraphList,
         choices,
         choicesList,
@@ -83,6 +83,8 @@ const getInitialStitchByName = async (req, res, next) => {
 }
 
 // From a POST: Loads a "blank" run of the story and saves it to the database
+
+//TODO: Enforce uniqueness and throw error when session for that user/story combo already exists
 const startStorySession = async (req, res, next) => {
 
     const { creator, story } = req.body;
@@ -114,6 +116,9 @@ const startStorySession = async (req, res, next) => {
         );
         return next(error);
     }
+
+    // TODO: Check here if the story ID in question is already in that user's list of sessions and error out if so
+
     try {
         const sess = await mongoose.startSession();
         console.log('Session started.');
@@ -131,7 +136,7 @@ const startStorySession = async (req, res, next) => {
         return next(error);
     }
     console.log(`Created a Storysession on story "${story}"`);
-    res.status(201).json({ storySession: createdSession.toObject({getters: true }) });
+    res.status(201).json({ storySession: createdSession.toObject({ getters: true }) });
 
 } 
 
@@ -278,31 +283,33 @@ const deleteStorySession = async (req, res, next) => {
 }
 
 
-// POST request with the username and story of a storysession along with a stitchname for the destination, all as one object.
-// TODO: although the individual sessions in here have try-catch and error handling, create higher-level error handling here and transactions
+// POST request with the ID of a storysession along with a stitchname for the destination, all as one object.
+
 const moveStorySession = async (req, res, next) => {
     console.log(`Parsing request to move story: ${JSON.stringify(req.body)}`)
-    // Will take a story session's username and story (ID instead?), and a destination, make the inkle object using the new destination and that session's flaglist (if any), 
-    
-    const { userId, storyId, destinationStitch } = req.body;
 
-    console.log(`Moving story and getting frontend. userId: ${userId} storyId: ${storyId} destination: ${destinationStitch}`);
+    const { storySessionId, destinationStitch } = req.body;
 
-    let rawStoryText;
+    console.log(`Moving story and getting frontend. Session ID: ${storySessionId} destination: ${destinationStitch}`);
+
     let fullSession;
     let sessionFlagList;
-    let sessionId;
-    try {
-    rawStoryText = await StoryService.getRawStoryTextById(storyId);
-    
-    // TODO: Should this also create a new session if one doesn't already exist?
-    fullSession = await StorySessionService.getStorySessionByIds(userId, storyId);
-    sessionFlagList = fullSession.sessionFlaglist;
-    sessionId = fullSession._id;
+    let story;
 
+    try {
+        fullSession = await StorySession.findById(storySessionId).populate('story'); // Using populate() to refer to a doc in another collection using the relations in the models.
     } catch (err) {
-        return next(err); // TODO: replace this with httpError object and assign its code etc.
+        const error = new HttpError(
+            'Something went wrong while attempting to a delete a note. (1)',
+            500
+        );
+        return next(error);
     }
+
+    story = fullSession.story;
+    sessionFlagList = fullSession.sessionFlaglist;
+
+    let rawStoryText = JSON.stringify(story.story);
     
     console.log("now making inkle object from raw text...")
     // Inklewriter initialization
@@ -314,15 +321,16 @@ const moveStorySession = async (req, res, next) => {
     inkle.start(destinationStitch, sessionFlagList);
 
     // It will then get all the story text, choices etc. for its new destination
+    const newFlagList = inkle.getFlagList();
     const paragraphList = inkle.getText();
     const choices = inkle.getChoices();
     const choicesList = inkle.getChoicesByName();
     const currentStitch = inkle.getCurrentStitchName(); // TODO: This MAY need to be made async so that this happens in the correct order
-    const newFlagList = inkle.getFlagList();
+  
 
     // and then fetch the notes for its new location:
     const location = {
-        story: storyId, stitch: currentStitch
+        story: story._id, stitch: currentStitch
     }
     
     let fetchedNotes;
@@ -338,7 +346,8 @@ const moveStorySession = async (req, res, next) => {
     const sessionPayload = { currentStitch, newFlagList }
     let updatedSession;
     try {
-        updatedSession = await StorySessionService.updateStorySessionById(sessionId, sessionPayload);
+        console.log(`Payload to update session: ${JSON.stringify(sessionPayload)}`);
+        updatedSession = StorySessionService.updateStorySessionById(storySessionId, sessionPayload);
     } catch {
         return next(err); // TODO: replace this with httpError object and write its code etc.
     }

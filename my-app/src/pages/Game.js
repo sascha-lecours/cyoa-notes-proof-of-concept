@@ -7,6 +7,7 @@ import { Footer } from '../components/Footer';
 import { Book } from '../components/Book';
 
 import { AuthContext } from '../util/auth-context';
+import { StorySessionContext } from '../util/storySession-context';
 import { getDebugSettings } from '../services/AppSettingsService';
 import { getMarginNotes } from '../services/NotesService.js';
 import { getStoryText, resetStory, getCurrentStitch, getCurrentStoryName, moveStoryAndGetFrontend } from '../services/StoryService.js';
@@ -28,6 +29,9 @@ const Game = () => {
   
   const [showDebugTools, setShowDebugTools] = useState(false);
   
+
+// TODO: this should load the frontend object derived from the current story session from the context
+
   const auth = useContext(AuthContext);
 
   useEffect(() => {

@@ -40,7 +40,7 @@ const getRawStoryTextById = async (storyId) => {
     let fetchedStory = {};
     try{
         fetchedStory = await Stories.findById(storyId);
-        fetchedStory = JSON.stringify(fetchedStoryArray.story);
+        fetchedStory = JSON.stringify(fetchedStory.story);
     } catch (err) {
         const error = new HttpError(
             'Error when attempting to get raw story text story by Id', 500

@@ -19,11 +19,8 @@ const libinkle = require('libinkle');
 
 // Boolean to show debug features in app
 
-const showTools = true;
+const showTools = false;
 
-
-// TODO: remove when no longer needed
-const testFlagList = [ 'saw mpsafd briefing', 'checked cra info', 'know waterloo' ]; // To be passed in for testing of preset flags
 
 // Basic inkle initialization and single-story functions:
 const buf = fs.readFileSync('testStory.json');
@@ -49,12 +46,6 @@ const resetStory = () => {
   inkle.start();
   moveToNewStitch();
 };
-
-// Placeholders
-
-const placeHolderStoryTitle = "60f726c3d9f8ac19d894f2d9"; 
-
-// placeholders end
 
 
 
@@ -82,37 +73,10 @@ app.use('/api/story', storyRoutes);
 
 
 
-// -- Things to be refactored begin here --
-app.get('/api/currentStitch', (req, res) => {
-  console.log('Current stitch: ' + currentStitch);
-  res.json(currentStitch);
-});
-
-app.get('/api/choiceslist', (req, res) => {
-  console.log('api/choiceslist called!')
-
-  res.json(choicesList);
-});
-
 
 app.get('/api/showDebugTools', (req, res) => {
   console.log('Show debug tools: ' + showTools);
   res.json(showTools);
-});
-
-app.get('/api/storyText', (req, res) => {
-  console.log('api/storyText called!')
-  res.json(paragraphList);
-});
-
-
-app.get('/api/currentStoryName', (req, res) => {
-  res.json(placeHolderStoryTitle);
-});
-
-app.get('/api/choices', (req, res) => {
-  console.log('api/choices called!')
-  res.json(choices);
 });
 
 app.get('/api/reset', (req, res) => {
@@ -121,7 +85,7 @@ app.get('/api/reset', (req, res) => {
   res.json('Story reset.');
 });
 
-
+// TODO: This can be removed when refactored out
 app.post('/api/makechoice', (req, res) => {
     const destination = req.body.destination;
     console.log('Making choice that leads to ', destination);

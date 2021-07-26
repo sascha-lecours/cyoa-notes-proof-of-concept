@@ -215,6 +215,28 @@ const getStorySessions = async (req, res, next) => {
 
 }
 
+const getStorySessionById = async (req, res, next) => {
+    const ssid = req.params.ssid;
+    let myStorySession; 
+    //console.log(`Looking up SSID: ${ssid}`)
+    try{
+        myStorySession = await StorySession.findById(ssid); 
+    } catch (err) {
+        const error = new HttpError(
+            'Error when attempting to find StorySession by SSID', 500
+        );
+        return next(error);
+    }
+    
+    if(!myStorySession) {
+        const error =  new HttpError('Could not find a StorySession with the specified ID.',
+        404
+        );
+        return next(error);
+    }
+    res.json({ storySession: myStorySession.toObject({ getters: true }) });
+}
+
 
 const getStorySessionsByUserID = async (req, res, next) => {
 
@@ -384,3 +406,4 @@ exports.getStorySessionsByUserID = getStorySessionsByUserID;
 exports.getStoryById = getStoryById;
 exports.getStorySessions = getStorySessions;
 exports.deleteStorySession = deleteStorySession;
+exports.getStorySessionById = getStorySessionById;

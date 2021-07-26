@@ -1,23 +1,38 @@
 import React, { useState, useEffect, useContext } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 import { NavLink } from 'react-router-dom';
+
+import { AuthContext } from '../util/auth-context';
+import { StorySessionContext } from '../util/storySession-context';
+
+import LoadingSpinner from '../components/appearance/LoadingSpinner';
+import ErrorModal from '../components/appearance/ErrorModal';
+import { useHttpClient } from '../util/hooks/httpHook';
 
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { Book } from '../components/Book';
 
-import { AuthContext } from '../util/auth-context';
-import { StorySessionContext } from '../util/storySession-context';
 import { getDebugSettings } from '../services/AppSettingsService';
 import { getMarginNotes } from '../services/NotesService.js';
 import { getStoryText, resetStory, getCurrentStitch, getCurrentStoryName, moveStoryAndGetFrontend } from '../services/StoryService.js';
 import { getChoices, getChoicesList, makeChoice } from '../services/ChoiceService.js';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 
 
 const Game = () => {
 
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+
+  const auth = useContext(AuthContext);
+  const ssContext = useContext(StorySessionContext);
+
+  const userId = auth.userId;
+  const ssid = ssContext.storySessionId;
+
+  const [lastActiveStitch, setLastActiveStitch] = useState(null);
   const [currentStoryId, setCurrentStoryId] = useState(null);
   const [currentStitchName, setCurrentStitchName] = useState(null);
   const [marginNotes, setMarginNotes] = useState([]);
@@ -25,15 +40,79 @@ const Game = () => {
   const [choices, setChoices] = useState({});
   const [choicesList, setChoicesList] = useState([]);
   const [needToUpdate, setNeedToUpdate] = useState(true);
-  const [frontEndObject, setFrontEndObject] = useState({}); // To be passed down in a callback function to the choice-maker component
+  const [frontEndObject, setFrontEndObject] = useState(); // To be passed down in a callback function to the choice-maker component
   
   const [showDebugTools, setShowDebugTools] = useState(false);
   
 
-// TODO: this should load the frontend object derived from the current story session from the context
+// Take frontend object and use it to set other values as needed.
 
-  const auth = useContext(AuthContext);
+useEffect(() => {
+  if(!needToUpdate) return;
+  if(!frontEndObject) return;
+  setNeedToUpdate(false);
 
+  let newChoicesList = frontEndObject.choicesList;
+  let newChoices = frontEndObject.choices;
+  let newStoryText = frontEndObject.paragraphList;
+  let newMarginNotes = frontEndObject.fetchedNotes;
+
+  console.log(`newChoicesList: ${newChoicesList}`);
+  console.log(`newChoices: ${JSON.stringify(newChoices)}`);
+  console.log(`newStoryText: ${newStoryText.toString()}`);
+  console.log(`newMarginNotes: ${newMarginNotes}`);
+
+  setChoicesList(newChoicesList);
+  setChoices(newChoices);
+  setStoryText(newStoryText);
+  setMarginNotes(newMarginNotes);
+
+
+}, [frontEndObject]);
+
+
+// On load: get last active stitch.
+
+useEffect(() => {
+
+  // Debug tools flag
+  if(!showDebugTools) { 
+    getDebugSettings()
+    .then(showDebugTools => setShowDebugTools(showDebugTools));
+  }
+
+  // Gets and sets storySession and then frontend Object
+  const fetchInitialFrontEndObject = async () => {
+    try {
+      const responseData = await sendRequest(
+        `http://localhost:3080/api/story/session/id/${ssid}`
+      );
+      setCurrentStoryId(responseData.storySession.story);
+      setLastActiveStitch(responseData.storySession.sessionLastActiveStitch);
+    } catch (err) {}
+    
+    try {
+      const responseData = await sendRequest(
+        `http://localhost:3080/api/story/session/move`,
+        'POST',
+        JSON.stringify({
+          storySessionId: ssid,
+          destinationStitch: lastActiveStitch
+        }),
+        {
+          'Content-Type': 'application/json'
+        }
+      );
+      setFrontEndObject(responseData);
+      setNeedToUpdate(true);
+    } catch (err) {}
+  };
+  fetchInitialFrontEndObject();
+}, [sendRequest, ssid]);
+
+
+
+/*
   useEffect(() => {
     getCurrentStoryName()
     .then(storyTitle => setCurrentStoryId(storyTitle));
@@ -85,58 +164,81 @@ const Game = () => {
 
       setNeedToUpdate(false);
   }, [needToUpdate]);
-
+*/
   const makeChoiceAndUpdate = async (destination) => {
-    let frontEndObj = await moveStoryAndGetFrontend(auth.userId, currentStoryId, destination);  // TODO: get current story ID better
+    try {
+      const responseData = await sendRequest(
+        `http://localhost:3080/api/story/session/move`,
+        'POST',
+        JSON.stringify({
+          storySessionId: ssid,
+          destinationStitch: destination
+        }),
+        {
+          'Content-Type': 'application/json'
+        }
+      );
+      setFrontEndObject(responseData);
+    } catch (err) {}
     setNeedToUpdate(true);
-    setFrontEndObject(frontEndObj);
+    
   }
 
 
 // Debugging tools:
-const ResetButton = () => {
-  return(
-    <button type="button" className="btn btn-secondary" onClick={(e)=>{
-      resetStory();
-      setNeedToUpdate(true);
-    }}>Reset story</button>
-  );
-}
+  const ResetButton = () => {
+    return(
+      <button type="button" className="btn btn-secondary" onClick={(e)=>{
+        resetStory();
+        setNeedToUpdate(true);
+      }}>Reset story</button>
+    );
+  }
 
-const GetCurrentStitchButton = () => {
-  return (
-    <button type="button" className="btn btn-info" onClick={(e)=>{
-      getCurrentStitch();
-      setNeedToUpdate(true);
-    }}>Update notes</button>
-  );
-}
-
-// Debugging tools end.
-// Removed <Header />
+  const GetCurrentStitchButton = () => {
     return (
-      <div className="Game">
-        
-        <div className="centralBody">
-          <Book 
-            marginNotes={marginNotes} 
-            storyText={storyText} 
-            choices={choices} 
-            choicesList={choicesList} 
-            makeChoice={makeChoiceAndUpdate}
-            currentStitch={currentStitchName}
-            currentStory={currentStoryId}
-            setFrontEndObject={setFrontEndObject}
-          ></Book>
-        </div>
+      <button type="button" className="btn btn-info" onClick={(e)=>{
+        getCurrentStitch();
+        setNeedToUpdate(true);
+      }}>Update notes</button>
+    );
+  }
+// Debugging tools end.
 
-        <div>
-          { showDebugTools ? <ResetButton /> : null }
-          { showDebugTools ? <GetCurrentStitchButton /> : null }
-        </div>
 
-        <Footer />
-      </div>
+
+  return (
+    <React.Fragment>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!isLoading && frontEndObject && 
+        <div className="Game">
+            
+            <div className="centralBody">
+              <Book 
+                marginNotes={marginNotes} 
+                storyText={storyText} 
+                choices={choices} 
+                choicesList={choicesList} 
+                makeChoice={makeChoiceAndUpdate}
+                currentStitch={currentStitchName}
+                currentStory={currentStoryId}
+                setFrontEndObject={setFrontEndObject}
+              ></Book>
+            </div>
+
+            <div>
+              { showDebugTools ? <ResetButton /> : null }
+              { showDebugTools ? <GetCurrentStitchButton /> : null }
+            </div>
+
+            <Footer />
+          </div>}
+    </React.Fragment>
   );
 }
 

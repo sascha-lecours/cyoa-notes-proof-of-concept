@@ -83,10 +83,14 @@ useEffect(() => {
 
   // Gets and sets storySession and then frontend Object
   const fetchInitialFrontEndObject = async () => {
+    let retrievedSession;
     try {
       const responseData = await sendRequest(
         `http://localhost:3080/api/story/session/id/${ssid}`
       );
+
+      retrievedSession = responseData;
+
       setCurrentStoryId(responseData.storySession.story);
       setLastActiveStitch(responseData.storySession.sessionLastActiveStitch);
     } catch (err) {}
@@ -97,7 +101,7 @@ useEffect(() => {
         'POST',
         JSON.stringify({
           storySessionId: ssid,
-          destinationStitch: lastActiveStitch
+          destinationStitch: retrievedSession.storySession.sessionLastActiveStitch 
         }),
         {
           'Content-Type': 'application/json'

@@ -28,7 +28,7 @@ const createNote = async (req, res, next) => {
     let user;
 
     try {
-        console.log(creator);
+        console.log(`Adding note: creator: ${creator}`);
         user = await Users.findById(creator);
     } catch (err) {
         const error = new HttpError(
@@ -39,6 +39,7 @@ const createNote = async (req, res, next) => {
     }
 
     if (!user) {
+        console.log(`No matching user found when adding note.`);
         const error = new HttpError(
             'Could not find user for provided ID', 
             404
@@ -47,8 +48,10 @@ const createNote = async (req, res, next) => {
     }
 
     try {
+        console.log(`Adding note: starting session`);
         const sess = await mongoose.startSession();
         sess.startTransaction();
+        console.log(`Adding note: about to save note ${JSON.stringify(createdNote)}`);
         await createdNote.save({ session: sess });
         user.notes.push(createdNote);
         await user.save({ session: sess });

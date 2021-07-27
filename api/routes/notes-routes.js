@@ -14,12 +14,13 @@ router.get('/userid/:uid', noteController.getNotesByUserId);
 router.post('/location', noteController.getNotesByLocation);
 
 
-router.post( // TODO: add more validation for creator etc
+router.post(
     '/',
     [
         check('content')
             .not()
             .isEmpty(),
+        // TODO: Check creator is an ID, location exists, stitch is set, story is an id
     ],
     noteController.createNote
 );

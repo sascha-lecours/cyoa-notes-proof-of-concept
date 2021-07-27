@@ -2,17 +2,26 @@ import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { AuthContext } from '../../util/auth-context';
+import { StorySessionContext } from '../../util/storySession-context';
 import './NavLinks.css';
 
 const NavLinks = props => {
   const auth = useContext(AuthContext);
+  const ssContext = useContext(StorySessionContext);
 
   return (
     <ul className="nav-links">
+      {ssContext.isInStorySession && (
+        <li>
+          <NavLink to="/game" exact>
+            RETURN TO STORY
+          </NavLink>
+        </li>
+      )}
       {auth.isLoggedIn && (
         <li>
           <NavLink to="/stories" exact>
-            NEW STORY
+            CHOOSE STORY
           </NavLink>
         </li>
       )}

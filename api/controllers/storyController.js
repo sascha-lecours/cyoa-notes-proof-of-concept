@@ -347,8 +347,8 @@ const moveStorySession = async (req, res, next) => {
     const paragraphList = inkle.getText();
     const choices = inkle.getChoices();
     const choicesList = inkle.getChoicesByName();
-    const currentStitch = inkle.getCurrentStitchName(); // TODO: This MAY need to be made async so that this happens in the correct order
-
+    const currentStitch = inkle.getCurrentStitchName(); 
+    
     // and then fetch the notes for its new location:
     const location = {
         story: story._id, stitch: currentStitch

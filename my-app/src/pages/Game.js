@@ -57,11 +57,6 @@ useEffect(() => {
   let newStoryText = frontEndObject.paragraphList;
   let newMarginNotes = frontEndObject.fetchedNotes;
 
-  console.log(`newChoicesList: ${newChoicesList}`);
-  console.log(`newChoices: ${JSON.stringify(newChoices)}`);
-  console.log(`newStoryText: ${newStoryText.toString()}`);
-  console.log(`newMarginNotes: ${newMarginNotes}`);
-
   setChoicesList(newChoicesList);
   setChoices(newChoices);
   setStoryText(newStoryText);
@@ -170,13 +165,14 @@ useEffect(() => {
   }, [needToUpdate]);
 */
   const makeChoiceAndUpdate = async (destination) => {
+    console.log(`new destination: ${destination}`)
     try {
       const responseData = await sendRequest(
         `http://localhost:3080/api/story/session/move`,
         'POST',
         JSON.stringify({
           storySessionId: ssid,
-          destinationStitch: destination
+          destinationStitch: destination // TODO: currently passing the array index instead of the string value, needs fixin'
         }),
         {
           'Content-Type': 'application/json'

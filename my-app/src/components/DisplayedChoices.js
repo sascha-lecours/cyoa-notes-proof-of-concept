@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { myPalette } from './appearance/paletteConstants.js';
 
-export const DisplayedChoices = ({choices, choicesList, makeChoice, setFrontEndObject}) => {
+export const DisplayedChoices = ({choices, choicesList, makeChoice }) => {
 
 
     // console.log('choicesList length: ', choicesList.length);

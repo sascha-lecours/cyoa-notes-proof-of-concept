@@ -16,13 +16,6 @@ const NavLinks = props => {
           </NavLink>
         </li>
       )}
-      {auth.isLoggedIn && (
-      <li>
-        <NavLink to="/story-sessions" exact>
-          CONTINUE STORY
-        </NavLink>
-      </li>
-      )}
       <li>
         <NavLink to="/users" exact>
           ALL USERS

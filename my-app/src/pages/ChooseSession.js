@@ -8,7 +8,7 @@ import StoryList from '../components/StoryList';
 import { AuthContext } from '../util/auth-context';
 
 
-// TODO: This is a work in progress and isn't yet hooked up
+// TODO: This is a work in progress and isn't yet hooked up. It may not be used in the final product (functionality instead in choosestory)
 
 const ChooseSession = () => {
 

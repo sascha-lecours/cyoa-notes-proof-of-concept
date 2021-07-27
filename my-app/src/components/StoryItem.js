@@ -26,21 +26,50 @@ const StoryItem = props => {
   const ssContext = useContext(StorySessionContext);
   const [ needRedirect, setNeedRedirect ] = useState(false);
 
-  const createNewStorySession = async (storyId) => {
+
+  // TODO: move more of this logic into the controller rather than this component
+  const createOrResumeStorySession = async (storyId) => {
+    
+    // First, check for an existing session for this user/story combo
+    let existingSession;
     try {
-      const responseData = await sendRequest(
-        `http://localhost:3080/api/story/session/start`,
+      existingSession = await sendRequest(
+        `http://localhost:3080/api/story/session/ids`,
         'POST',
         JSON.stringify({
-          creator: auth.userId,
-          story: storyId
+          userId: auth.userId,
+          storyId: storyId
         }),
         { 'Content-Type': 'application/json' }
       );
-      ssContext.enterStorySession(responseData.storySession.id);
-      setNeedRedirect(true);
-      // TODO: Return response value here in case it's ever needed?
+      console.log(`existing session: ${JSON.stringify(existingSession)}`);
+      if(existingSession.storySession) {
+        ssContext.enterStorySession(existingSession.storySession.id);
+        setNeedRedirect(true);
+      }
     } catch (err) {}
+
+    
+
+    // Create session if one didn't already exist
+    if(!existingSession){
+      console.log(`No existing session found, trying to make a new one`);
+      try {
+        const responseData = await sendRequest(
+          `http://localhost:3080/api/story/session/start`,
+          'POST',
+          JSON.stringify({
+            creator: auth.userId,
+            story: storyId
+          }),
+          { 'Content-Type': 'application/json' }
+        );
+        ssContext.enterStorySession(responseData.storySession.id);
+        setNeedRedirect(true);
+        // TODO: Return response value here in case it's ever needed?
+      } catch (err) {}
+    }
+
   }
 
   return (
@@ -59,9 +88,9 @@ const StoryItem = props => {
               type="button" 
               className="btn btn-info" 
               onClick={(e)=>{
-                createNewStorySession(props.id);
+                createOrResumeStorySession(props.id);
             }}>
-              Begin
+              Enter Story
             </button>
           </div>
           {props.shortText && (

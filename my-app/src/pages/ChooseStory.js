@@ -8,33 +8,13 @@ import StoryList from '../components/StoryList';
 import { AuthContext } from '../util/auth-context';
 
 
-// Display possible stories. On each one, selecting it will start a new session (prompting to resume or overwrite if existing session for that story)
-// Starting a new session in this way will update the authcontext's storySessionId and redirect to the Game page.
+// Display possible stories. On each one, selecting it will start a new session or resume an existing one (TODO: display which of those it will be, offer option to start from zero if existing)
+// creating or resuming a session will update the authcontext's storySessionId and redirect to the Game page.
 const ChooseStory = () => {
 
     const [loadedStories, setLoadedStories] = useState();
-    const [newStorySession, setNewStorySession] = useState();
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-    
-
-    // This function will be passed down to the individual clickable story components
-    const selectStory = async (sid, uid) => {
-        try {
-            const responseData = await sendRequest(
-                'http://localhost:3080/api/story/session/start',
-                'POST',
-                JSON.stringify({
-                    creator: uid,
-                    story: sid
-                }),
-                { 'Content-Type': 'application/json' }
-            );
-            setNewStorySession(responseData._id);
-        } catch (err) {
-            // Error handled in sendRequest
-        }
-    }
 
     useEffect(()=>{
         const fetchStories = async () => {

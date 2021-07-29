@@ -63,7 +63,7 @@ useEffect(() => {
   setMarginNotes(newMarginNotes);
 
 
-}, [frontEndObject]);
+}, [needToUpdate, frontEndObject]);
 
 
 // On load: get last active stitch.
@@ -165,22 +165,23 @@ useEffect(() => {
   }, [needToUpdate]);
 */
   const makeChoiceAndUpdate = async (destination) => {
-    console.log(`new destination: ${destination}`)
+    console.log(`new destination: ${choicesList[destination]}`)
     try {
       const responseData = await sendRequest(
         `http://localhost:3080/api/story/session/move`,
         'POST',
         JSON.stringify({
           storySessionId: ssid,
-          destinationStitch: destination // TODO: currently passing the array index instead of the string value, needs fixin'
+          destinationStitch:  choicesList[destination]
         }),
         {
           'Content-Type': 'application/json'
         }
       );
       setFrontEndObject(responseData);
+      setNeedToUpdate(true);
     } catch (err) {}
-    setNeedToUpdate(true);
+   
     
   }
 
@@ -195,10 +196,10 @@ useEffect(() => {
     );
   }
 
-  const GetCurrentStitchButton = () => {
+  const triggerUpdateButton = () => {
     return (
       <button type="button" className="btn btn-info" onClick={(e)=>{
-        getCurrentStitch();
+        //getCurrentStitch();
         setNeedToUpdate(true);
       }}>Update notes</button>
     );
@@ -233,7 +234,7 @@ useEffect(() => {
 
             <div>
               { showDebugTools ? <ResetButton /> : null }
-              { showDebugTools ? <GetCurrentStitchButton /> : null }
+              { showDebugTools ? <triggerUpdateButton /> : null }
             </div>
 
             <Footer />

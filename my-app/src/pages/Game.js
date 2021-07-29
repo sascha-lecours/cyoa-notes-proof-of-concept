@@ -104,61 +104,6 @@ useEffect(() => {
   fetchInitialFrontEndObject();
 }, [sendRequest, ssid]);
 
-
-
-/*
-  useEffect(() => {
-    getCurrentStoryName()
-    .then(storyTitle => setCurrentStoryId(storyTitle));
-  }, []);
-
-  // The frontend state object (frontEndObject) will be saved in the method that moves the story, and then drawn from here.
-  
-  useEffect(() => { // TODO: Break these out more finely when the time comes rather than updating all of them every time
-    if(!needToUpdate) return;
-
-    if(!showDebugTools) { 
-      getDebugSettings()
-      .then(showDebugTools => setShowDebugTools(showDebugTools));
-    }
-
-    getCurrentStitch()
-    .then(stitchName => setCurrentStitchName(stitchName));
-
-    if(currentStoryId && currentStitchName){
-      const currentLocation = { location: { story: currentStoryId, stitch: currentStitchName }}
-      getMarginNotes(currentLocation)
-      .then(fetchedNotes => {
-        const newNotes = fetchedNotes.fetchedNotes;
-        setMarginNotes(newNotes);
-      });
-    }
-
-
-
-    getStoryText()
-      .then(text =>{
-        //console.log(text);
-        setStoryText(text);
-      });
-
-      // TODO: also get current username and add to the state
-
-    getChoices()
-      .then(choices => {
-        //console.log(choices);
-        setChoices(choices);
-      });
-
-    getChoicesList()
-      .then(choicesList => {
-        //console.log(choicesList);
-        setChoicesList(choicesList);
-      });
-
-      setNeedToUpdate(false);
-  }, [needToUpdate]);
-*/
   const makeChoiceAndUpdate = async (destination) => {
     console.log(`new destination: ${choicesList[destination]}`)
     try {

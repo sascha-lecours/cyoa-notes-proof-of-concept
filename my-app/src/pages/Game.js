@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 
-import { NavLink } from 'react-router-dom';
-
 import { AuthContext } from '../util/auth-context';
 import { StorySessionContext } from '../util/storySession-context';
 
@@ -9,14 +7,11 @@ import LoadingSpinner from '../components/appearance/LoadingSpinner';
 import ErrorModal from '../components/appearance/ErrorModal';
 import { useHttpClient } from '../util/hooks/httpHook';
 
-import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { Book } from '../components/Book';
 
 import { getDebugSettings } from '../services/AppSettingsService';
-import { getMarginNotes } from '../services/NotesService.js';
-import { getStoryText, resetStory, getCurrentStitch, getCurrentStoryName, moveStoryAndGetFrontend } from '../services/StoryService.js';
-import { getChoices, getChoicesList, makeChoice } from '../services/ChoiceService.js';
+import { resetStory } from '../services/StoryService.js';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';

@@ -35,7 +35,8 @@ const Game = () => {
   const [choicesList, setChoicesList] = useState([]);
   const [needToUpdate, setNeedToUpdate] = useState(true);
   const [frontEndObject, setFrontEndObject] = useState(); // To be passed down in a callback function to the choice-maker component
-  
+  const [isEnding, setIsEnding] = useState(false);
+
   const [showDebugTools, setShowDebugTools] = useState(false);
   
 
@@ -50,11 +51,13 @@ useEffect(() => {
   let newChoices = frontEndObject.choices;
   let newStoryText = frontEndObject.paragraphList;
   let newMarginNotes = frontEndObject.fetchedNotes;
+  let newIsEnding = frontEndObject.isEnding;
 
   setChoicesList(newChoicesList);
   setChoices(newChoices);
   setStoryText(newStoryText);
   setMarginNotes(newMarginNotes);
+  setIsEnding(newIsEnding);
 
 
 }, [needToUpdate, frontEndObject]);
@@ -168,6 +171,7 @@ useEffect(() => {
                 currentStitch={lastActiveStitch}
                 currentStory={currentStoryId}
                 setFrontEndObject={setFrontEndObject}
+                isEnding={isEnding}
               ></Book>
             </div>
 

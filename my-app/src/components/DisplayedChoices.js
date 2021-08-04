@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { myPalette } from './appearance/paletteConstants.js';
 
 export const DisplayedChoices = ({choices, choicesList, makeChoice }) => {

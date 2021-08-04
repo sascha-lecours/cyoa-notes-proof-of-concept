@@ -348,7 +348,8 @@ const moveStorySession = async (req, res, next) => {
     const choices = inkle.getChoices();
     const choicesList = inkle.getChoicesByName();
     const currentStitch = inkle.getCurrentStitchName(); 
-    
+    const isEnding = inkle.getFinalStatus();
+
     // and then fetch the notes for its new location:
     const location = {
         story: story._id, stitch: currentStitch
@@ -386,7 +387,8 @@ const moveStorySession = async (req, res, next) => {
         choices: choices,
         choicesList: choicesList,
         fetchedNotes: fetchedNotes.fetchedNotes,
-        currentStitch: currentStitch
+        currentStitch: currentStitch,
+        isEnding: isEnding
     }
 
     res.json(frontEndObject);

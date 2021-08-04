@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Redirect } from 'react-router-dom';
 
 import Avatar from './Avatar';
 import Card from './Card';

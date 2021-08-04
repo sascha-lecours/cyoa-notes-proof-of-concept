@@ -1,12 +1,17 @@
-import React, { Component } from 'react';
-import { myPalette } from './appearance/paletteConstants.js';
+import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
+
 import { ChoiceArea } from './ChoiceArea.js';
+import { EndStoryButton } from './EndStoryButton.js';
+
+import { myPalette } from './appearance/paletteConstants.js';
 
 
 // The RIGHT page primarily holds interactable option boxes rather than descriptive text
 
-export const RightPage = ({ choices, choicesList, makeChoice, setFrontEndObject }) => {
+export const RightPage = ({ choices, choicesList, makeChoice, setFrontEndObject, isEnding }) => {
 
+    const [showEndOfStoryRedirect, setShowEndOfStoryRedirect] = useState(false);
 
     const rightPageStyle = {
         width: '35%',
@@ -22,6 +27,8 @@ export const RightPage = ({ choices, choicesList, makeChoice, setFrontEndObject 
 
     return (
         <div className="RightPage" style={rightPageStyle}>
+            {isEnding && <EndStoryButton setShowEndOfStoryRedirect={setShowEndOfStoryRedirect} />}
+            {showEndOfStoryRedirect && <Redirect to="/stories" /> }
            <ChoiceArea choices={choices} choicesList={choicesList} makeChoice={makeChoice} setFrontEndObject={setFrontEndObject} />
         </div>
     );

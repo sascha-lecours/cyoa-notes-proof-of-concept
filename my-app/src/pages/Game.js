@@ -29,7 +29,6 @@ const Game = () => {
 
   const [lastActiveStitch, setLastActiveStitch] = useState(null);
   const [currentStoryId, setCurrentStoryId] = useState(null);
-  const [currentStitchName, setCurrentStitchName] = useState(null);
   const [marginNotes, setMarginNotes] = useState([]);
   const [storyText, setStoryText] = useState([]);
   const [choices, setChoices] = useState({});
@@ -166,7 +165,7 @@ useEffect(() => {
                 choices={choices} 
                 choicesList={choicesList} 
                 makeChoice={makeChoiceAndUpdate}
-                currentStitch={currentStitchName}
+                currentStitch={lastActiveStitch}
                 currentStory={currentStoryId}
                 setFrontEndObject={setFrontEndObject}
               ></Book>

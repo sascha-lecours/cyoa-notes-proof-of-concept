@@ -44,9 +44,8 @@ const NoteAddingArea = ({ currentStitch, currentStory, toggleShowNoteAdder }) =>
             );
             toggleShowNoteAdder();
         } catch (err) {
-
+            
         }
-        
     };
 
     return (

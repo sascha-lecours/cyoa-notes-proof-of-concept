@@ -140,7 +140,8 @@ const startStorySession = async (req, res, next) => {
 
 } 
 
-// takes a POST with userName and storyName
+// takes a POST with userName and storyName 
+// TODO: make this return "null" if one doesn't exist to avoid the 404 when choosing a new story
 const getStorySessionByIds = async (req, res, next) => {
     const userId = req.body.userId;
     const storyId = req.body.storyId;

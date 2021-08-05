@@ -6,7 +6,6 @@ import Game from './pages/Game';
 import Auth from './pages/Auth';
 import Users from './pages/Users';
 import ChooseStory from './pages/ChooseStory.js';
-import ChooseSession from './pages/ChooseSession.js';
 import UserNotes from './pages/UserNotes.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -61,9 +60,6 @@ const App = () => {
         </Route>
         <Route path="/my-notes" exact>
           <UserNotes />
-        </Route>
-        <Route path="/story-sessions" exact>
-          <ChooseSession />
         </Route>
 
         <Redirect to="/" />

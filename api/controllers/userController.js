@@ -1,8 +1,11 @@
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 const HttpError = require('../models/httpError');
+
+let privateKey = 'very_secret_private_key'; // TODO: this should be made secure for production
 
 const signup = async (req, res, next) => {
 
@@ -24,6 +27,23 @@ const signup = async (req, res, next) => {
         );
         return next(error);
     }
+
+    let token;
+
+    try {
+        token = jwt.sign(
+            { userId: createdUser.id, email: createdUser.email }, 
+            privateKey, 
+            { expiresIn: '2h' }
+        );
+    } catch (err) {
+        const error = new HttpError(
+            'Signing up failed, please try again later.',
+            500
+        );
+        return next(error);
+    }
+
 
     if (existingUser) {
         const error = new HttpError(
@@ -66,7 +86,7 @@ const signup = async (req, res, next) => {
         return next(error);
     }
     console.log(`Created new user: ${name}`);
-    res.status(201).json({user: createdUser.toObject({ getters: true })});
+    res.status(201).json({ user: createdUser.toObject({ getters: true }), token: token });
 };
 
 const login = async (req, res, next) => {
@@ -112,9 +132,26 @@ const login = async (req, res, next) => {
         return next(error);
     }
 
+    let token;
+
+    try {
+        token = jwt.sign(
+            { userId: existingUser.id, email: existingUser.email }, 
+            privateKey, 
+            { expiresIn: '2h' }
+        );
+    } catch (err) {
+        const error = new HttpError(
+            'Login failed, please try again later.',
+            500
+        );
+        return next(error);
+    }
+
     res.json({
         message: 'User logged in', 
-        user: existingUser.toObject({ getters: true }) 
+        user: existingUser.toObject({ getters: true }),
+        token: token 
     });
 }
 

@@ -32,19 +32,6 @@ const getStories = async (req, res, next) => { // Array of all stories. Extremel
 };
 
 
-// Takes in a usersession as an argument and returns a frontendobject 
-// TODO: this may be redundant in combination with the story moving method which returns a frontend object.
-const getStoryFrontEndObject = async (req, res, next) => {
-    /*{
-        storyName, // Not the inkle one,the DB one. // <-- Should this be the ID instead of the name?
-        paragraphList,
-        choices,
-        choicesList,
-        currentStitch, // (use value of last active?)
-        notes
-    }*/
-    
-};
 
 // POST with the story name
 const getStoryByName = async (req, res, next) => {
@@ -191,14 +178,22 @@ const getStorySessionByIds = async (req, res, next) => {
         return next(error);
     }
     
+    /*
     if(!storySession) {
         const error =  new HttpError('Could not find a storySession with the specified IDs.',
         404
         );
         return next(error);
     }
+    */
 
-    res.json({ storySession: storySession.toObject({getters: true }) });
+    if(!storySession) {
+        storySession = null;
+    } else {
+        storySession = storySession.toObject({ getters: true });
+    }
+
+    res.json({ storySession: storySession });
 }
 
 const getStorySessions = async (req, res, next) => {
@@ -402,7 +397,6 @@ exports.getStoryByName = getStoryByName;
 exports.createStory = createStory;
 exports.getStories = getStories;
 exports.startStorySession = startStorySession;
-exports.getStoryFrontEndObject = getStoryFrontEndObject; // TODO: this might need to instead be a service? (evaluate need for this to be used in other controllers)
 exports.getStorySessionByIds = getStorySessionByIds;
 exports.moveStorySession = moveStorySession;
 exports.getStorySessionsByUserID = getStorySessionsByUserID;

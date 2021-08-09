@@ -1,4 +1,4 @@
-const { v4: uuid } = require('uuid');
+const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
@@ -33,9 +33,21 @@ const signup = async (req, res, next) => {
         return next(error);
       }
 
+    let hashedPassword;
+    try {
+        hashedPassword = await bcrypt.hash(password, 12);
+    } catch (err) {
+        const error = new HttpError(
+            'Could not create user, please try again.', 
+            500
+        );
+        return next(error);
+    }
+    
+
     let createdUser = new User({
         name,
-        password, // TODO: replace this with encrypted version later
+        password: hashedPassword,
         email,
         image: 'https://homepages.cae.wisc.edu/~ece533/images/tulips.png',
         notes: [],
@@ -72,7 +84,27 @@ const login = async (req, res, next) => {
         return next(error);
     }
 
-    if(!existingUser || existingUser.password !== password){
+    if(!existingUser) {
+        const error = new HttpError(
+            'Invalid credentials, could not log in.',
+            401
+        );
+        return next(error);
+    }
+
+    let isValidPassword = false;
+    
+    try {
+        isValidPassword = await brcrypt.compare(password, existingUser.password);
+    } catch {
+        const error = new HttpError(
+            'Login failed, please try again later.',
+            500
+        );
+        return next(error);
+    }
+
+    if(!isValidPassword) {
         const error = new HttpError(
             'Invalid credentials, could not log in.',
             401

@@ -3,13 +3,17 @@ const { check } = require('express-validator');
 
 const noteController = require('../controllers/noteController');
 const router = express.Router();
-
-// TODO: make these point to services instead
+const checkAuth = require('../middleware/check-auth');
 
 
 router.get('/', noteController.getNotes);
 router.get('/id/:nid', noteController.getNoteById);
+
+// Everything below this "use" middleware requires a valid token
+router.use(checkAuth);
+
 router.get('/userid/:uid', noteController.getNotesByUserId);
+
 
 router.post('/location', noteController.getNotesByLocation);
 

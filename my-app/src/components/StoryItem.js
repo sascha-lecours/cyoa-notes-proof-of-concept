@@ -43,16 +43,15 @@ const StoryItem = props => {
         { 'Content-Type': 'application/json' }
       );
       console.log(`existing session: ${JSON.stringify(existingSession)}`);
-      if(existingSession.storySession) {
+      if(existingSession.storySession && existingSession.storySession !== null) {
         ssContext.enterStorySession(existingSession.storySession.id);
         setNeedRedirect(true);
       }
     } catch (err) {}
 
     
-
     // Create session if one didn't already exist
-    if(!existingSession){
+    if(!existingSession || existingSession.storySession === null) {
       console.log(`No existing session found, trying to make a new one`);
       try {
         const responseData = await sendRequest(

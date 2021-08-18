@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const HttpError = require('../models/httpError');
 
-let privateKey = 'very_secret_private_key'; // TODO: this should be made secure for production
+const privateKey = 'very_secret_private_key'; // TODO: this should be made secure for production
 
 const signup = async (req, res, next) => {
 
@@ -29,7 +29,6 @@ const signup = async (req, res, next) => {
     }
 
     let token;
-
     try {
         token = jwt.sign(
             { userId: createdUser.id, email: createdUser.email }, 
@@ -86,7 +85,10 @@ const signup = async (req, res, next) => {
         return next(error);
     }
     console.log(`Created new user: ${name}`);
-    res.status(201).json({ user: createdUser.toObject({ getters: true }), token: token });
+    res.status(201).json({ // TODO: instead of the whole user object, return only the ID, email and token?
+        user: createdUser.toObject({ getters: true }), 
+        token: token 
+    });
 };
 
 const login = async (req, res, next) => {
@@ -133,7 +135,6 @@ const login = async (req, res, next) => {
     }
 
     let token;
-
     try {
         token = jwt.sign(
             { userId: existingUser.id, email: existingUser.email }, 
@@ -148,7 +149,7 @@ const login = async (req, res, next) => {
         return next(error);
     }
 
-    res.json({
+    res.json({ // TODO: instead of the whole user object, return only the ID, email and token? (remove 'message' ?)
         message: 'User logged in', 
         user: existingUser.toObject({ getters: true }),
         token: token 
@@ -234,3 +235,5 @@ exports.login = login;
 exports.updateUser = updateUser;
 exports.deleteUser = deleteUser;
 exports.getUsers = getUsers;
+
+exports.privateKey = privateKey; // TOODO: this will be replaced later

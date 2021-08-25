@@ -28,6 +28,7 @@ const App = () => {
   const logout = useCallback(() => {
     setIsLoggedIn(false);
     setUserId(null);
+    exitStorySession();
   }, []);
 
 

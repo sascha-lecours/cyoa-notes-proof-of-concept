@@ -22,22 +22,7 @@ const signup = async (req, res, next) => {
         existingUser = await User.findOne({ email: email });
     } catch (err) {
         const error = new HttpError(
-            'Signing up failed, please try again later.',
-            500
-        );
-        return next(error);
-    }
-
-    let token;
-    try {
-        token = jwt.sign(
-            { userId: createdUser.id, email: createdUser.email }, 
-            privateKey, 
-            { expiresIn: '2h' }
-        );
-    } catch (err) {
-        const error = new HttpError(
-            'Signing up failed, please try again later.',
+            'Signing up failed, please try again later. (1)',
             500
         );
         return next(error);
@@ -72,6 +57,21 @@ const signup = async (req, res, next) => {
         notes: [],
         storySessions: []
     });
+
+    let token;
+    try {
+        token = jwt.sign(
+            { userId: createdUser.id, email: createdUser.email }, 
+            privateKey, 
+            { expiresIn: '2h' }
+        );
+    } catch (err) {
+        const error = new HttpError(
+            'Signing up failed, please try again later. (2)',
+            500
+        );
+        return next(error);
+    }
     
     console.log(`New user submitted for saving: ${JSON.stringify(createdUser)} ...`);
     
@@ -85,7 +85,7 @@ const signup = async (req, res, next) => {
         return next(error);
     }
     console.log(`Created new user: ${name}`);
-    res.status(201).json({ // TODO: instead of the whole user object, return only the ID, email and token?
+    res.status(201).json({ // TODO: instead of the whole user object, maybe return only the ID, email and token?
         user: createdUser.toObject({ getters: true }), 
         token: token 
     });
@@ -98,9 +98,9 @@ const login = async (req, res, next) => {
 
     try {
         existingUser = await User.findOne({ email: email });
-    } catch {
+    } catch (err) {
         const error = new HttpError(
-            'Login failed, please try again later.',
+            'Login failed, please try again later. (1)',
             500
         );
         return next(error);
@@ -117,10 +117,10 @@ const login = async (req, res, next) => {
     let isValidPassword = false;
     
     try {
-        isValidPassword = await brcrypt.compare(password, existingUser.password);
-    } catch {
+        isValidPassword = await bcrypt.compare(password, existingUser.password);
+    } catch (err) {
         const error = new HttpError(
-            'Login failed, please try again later.',
+            'Login failed, please try again later. (2)',
             500
         );
         return next(error);
@@ -143,7 +143,7 @@ const login = async (req, res, next) => {
         );
     } catch (err) {
         const error = new HttpError(
-            'Login failed, please try again later.',
+            'Login failed, please try again later. (3)',
             500
         );
         return next(error);
@@ -191,7 +191,7 @@ const getUsers = async (req, res, next) => {
         );
         return next(error);
     }
-    res.json({ users: users.map(user => user.toObject({getters: true })) });
+    res.json({ users: users.map(user => user.toObject({ getters: true })) });
 
 }
 
@@ -200,6 +200,9 @@ const updateUser = async (req, res, next) => {
 }
 
 const deleteUser = async (req, res, next) => {
+
+    // TODO: make this also clear out storysessions and notes
+
     const userId = req.params.uid;
 
     let user;

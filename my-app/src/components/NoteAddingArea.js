@@ -28,6 +28,7 @@ const NoteAddingArea = ({ currentStitch, currentStory, toggleShowNoteAdder }) =>
 
     const noteSubmitHandler = async event => {
         event.preventDefault();
+        console.log('Submitting note with Authorization: Bearer ' + auth.token);
         try {
             await sendRequest(
                 'http://localhost:3080/api/notes', 
@@ -40,7 +41,10 @@ const NoteAddingArea = ({ currentStitch, currentStory, toggleShowNoteAdder }) =>
                     },
                     content: formState.inputs.content.value
                 }),
-                { 'Content-Type': 'application/json' }
+                { 
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + auth.token
+                }
             );
             toggleShowNoteAdder();
         } catch (err) {

@@ -9,14 +9,12 @@ const checkAuth = require('../middleware/check-auth');
 router.get('/', noteController.getNotes);
 router.get('/id/:nid', noteController.getNoteById);
 
-// Everything below this "use" middleware requires a valid token
+router.post('/location', noteController.getNotesByLocation); 
+
+// Everything below this "checkAuth" middleware requires a valid token
 router.use(checkAuth);
 
-router.get('/userid/:uid', noteController.getNotesByUserId);
-
-
-router.post('/location', noteController.getNotesByLocation);
-
+router.get('/userid/:uid', noteController.getNotesByUserId); // TODO: still needs token to be sent during requests
 
 router.post(
     '/',
@@ -29,7 +27,7 @@ router.post(
     noteController.createNote
 );
 
-router.delete('/delete/:nid', noteController.deleteNote)
+router.delete('/delete/:nid', noteController.deleteNote) // TODO: still needs token to be sent during requests
 
 
 /* // Still TODO

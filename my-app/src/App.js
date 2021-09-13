@@ -17,16 +17,16 @@ import { StorySessionContext } from './util/storySession-context.js';
 // TODO: remaining nav options: view my notes. (bonus: continue previous story)
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState(false);
   const [userId, setUserId] = useState(null);
 
-  const login = useCallback((uid) => {
-    setIsLoggedIn(true);
+  const login = useCallback((uid, token) => {
+    setToken(token);
     setUserId(uid);
   }, []);
 
   const logout = useCallback(() => {
-    setIsLoggedIn(false);
+    setToken(null);
     setUserId(null);
     exitStorySession();
   }, []);
@@ -47,7 +47,7 @@ const App = () => {
 
   let routes;
   // TODO: Change "/" path for authenticated route to be story-choose rather than game
-  if (isLoggedIn) {
+  if (token) {
     routes = (
       <Switch>
         <Route path="/" exact>
@@ -91,7 +91,8 @@ const App = () => {
   return (
     <AuthContext.Provider 
       value={{ 
-        isLoggedIn: isLoggedIn, 
+        isLoggedIn: !!token, //true if there is a truthy value for token, else false.
+        token: token,
         userId: userId, 
         login: login, 
         logout: logout,  

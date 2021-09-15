@@ -59,12 +59,12 @@ const createNote = async (req, res, next) => {
 
     } catch (err) {
         const error = new HttpError(
-            'Creating note has failed',
+            'Creating note has failed' + '\n error: ' + err,
             500
         );
         return next(error);
     }
-    console.log(`Created a note on storyId: "${location.story}"`);
+    console.log(`Created a note on storyId: "${location.story}" at stitch ${location.stitch}`);
     res.status(201).json({ note: createdNote });
 }
 

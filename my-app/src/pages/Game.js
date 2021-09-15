@@ -24,7 +24,7 @@ const Game = () => {
   const auth = useContext(AuthContext);
   const ssContext = useContext(StorySessionContext);
 
-  const userId = auth.userId;
+  const userId = auth.userId; // TODO - this can probably be removed
   const ssid = ssContext.storySessionId;
 
   const [lastActiveStitch, setLastActiveStitch] = useState(null);
@@ -53,12 +53,14 @@ useEffect(() => {
   let newStoryText = frontEndObject.paragraphList;
   let newMarginNotes = frontEndObject.fetchedNotes;
   let newIsEnding = frontEndObject.isEnding;
+  let newCurrentStitch = frontEndObject.currentStitch;
 
   setChoicesList(newChoicesList);
   setChoices(newChoices);
   setStoryText(newStoryText);
   setMarginNotes(newMarginNotes);
   setIsEnding(newIsEnding);
+  setLastActiveStitch(newCurrentStitch);
 
 
 }, [needToUpdate, frontEndObject]);
@@ -86,6 +88,7 @@ useEffect(() => {
 
       setCurrentStoryId(responseData.storySession.story);
       setLastActiveStitch(responseData.storySession.sessionLastActiveStitch);
+      console.log(`last active stitch: ${responseData.storySession.sessionLastActiveStitch}`);
     } catch (err) {}
     
     try {

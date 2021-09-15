@@ -40,7 +40,10 @@ const StoryItem = props => {
           userId: auth.userId,
           storyId: storyId
         }),
-        { 'Content-Type': 'application/json' }
+        {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + auth.token // TODO: not currently actually required as this is an unsecured request anyway
+        }
       );
       console.log(`existing session: ${JSON.stringify(existingSession)}`);
       if(existingSession.storySession && existingSession.storySession !== null) {
@@ -53,6 +56,7 @@ const StoryItem = props => {
     // Create session if one didn't already exist
     if(!existingSession || existingSession.storySession === null) {
       console.log(`No existing session found, trying to make a new one`);
+      console.log('Starting a new story session with Authorization: Bearer ' + auth.token);
       try {
         const responseData = await sendRequest(
           `http://localhost:3080/api/story/session/start`,
@@ -61,7 +65,10 @@ const StoryItem = props => {
             creator: auth.userId,
             story: storyId
           }),
-          { 'Content-Type': 'application/json' }
+          { 
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + auth.token
+          }
         );
         ssContext.enterStorySession(responseData.storySession.id);
         setNeedRedirect(true);

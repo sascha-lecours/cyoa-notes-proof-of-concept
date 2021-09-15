@@ -97,7 +97,8 @@ useEffect(() => {
           destinationStitch: retrievedSession.storySession.sessionLastActiveStitch 
         }),
         {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + auth.token
         }
       );
       setFrontEndObject(responseData);
@@ -118,7 +119,8 @@ useEffect(() => {
           destinationStitch:  choicesList[destination]
         }),
         {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + auth.token
         }
       );
       setFrontEndObject(responseData);

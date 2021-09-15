@@ -5,6 +5,7 @@ import LoadingSpinner from './appearance/LoadingSpinner';
 
 import { StorySessionContext } from '../util/storySession-context.js';
 import { useHttpClient } from '../util/hooks/httpHook';
+import { AuthContext } from '../util/auth-context';
 
 import { myPalette } from './appearance/paletteConstants.js';
 
@@ -13,12 +14,15 @@ import { myPalette } from './appearance/paletteConstants.js';
 export const EndStoryButton = ({ setShowEndOfStoryRedirect }) => {
 
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const auth = useContext(AuthContext);
 
     const deleteCurrentStorySession = async () => {
         try {
           const responseData = await sendRequest(
             `http://localhost:3080/api/story/session/delete/${ssid}`,
             'DELETE',
+            null,
+            { Authorization: 'Bearer ' + auth.token }
           );
           setShowEndOfStoryRedirect(true);
         } catch (err) {}

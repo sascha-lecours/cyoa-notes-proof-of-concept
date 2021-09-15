@@ -87,7 +87,7 @@ const getNoteById = async (req, res, next) => {
         );
         return next(error);
     }
-    res.json({ note: note.toObject({ getters: true }) }); // "Getters" being true adds "id" property, not just the underscore-prefixed ID in DB.
+    res.json({ note: note.toObject({ getters: true }) }); // "Getters" being true adds "id" property, not just the underscore-prefixed ID in the DB.
 }
 
 const getNotesByLocation = async (req, res, next) => {
@@ -140,7 +140,7 @@ const updateNote = async (req, res, next) => {
     // TODO
 }
 
-const deleteNote = async (req, res, next) => {
+const deleteNote = async (req, res, next) => { 
     const noteId = req.params.nid;
 
     let note;

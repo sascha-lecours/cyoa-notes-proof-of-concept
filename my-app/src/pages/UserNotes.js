@@ -19,9 +19,16 @@ const UserNotes = () => {
 
     useEffect(()=>{
         const fetchNotes = async () => {
+            console.log('Fetching all user notes with Authorization: Bearer ' + auth.token);
             try {
+                
                 const responseData = await sendRequest(
-                    `http://localhost:3080/api/notes/userid/${auth.userId}`
+                    `http://localhost:3080/api/notes/userid/${auth.userId}`, 
+                    'GET', 
+                    null, // No body
+                    { 
+                        Authorization: 'Bearer ' + auth.token
+                    }
                 );
                 setLoadedNotes(responseData.notes);
             } catch (err) {

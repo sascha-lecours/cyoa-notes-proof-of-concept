@@ -5,7 +5,7 @@ import { StoryTextArea } from './StoryTextArea.js';
 
 // the LEFT page primarily holds descriptive text and margin notes
 
-export const LeftPage = ({ marginNotes, storyText, currentStitch, currentStory }) => {
+export const LeftPage = ({ marginNotes, storyText, currentStitch, currentStory, setNeedRefresh }) => {
 
 
     const leftPageStyle = {
@@ -24,7 +24,7 @@ export const LeftPage = ({ marginNotes, storyText, currentStitch, currentStory }
 
     return (
             <div style={leftPageStyle} className="LeftPage">
-                <MarginArea marginNotes = {marginNotes} currentStitch={currentStitch} currentStory={currentStory} />
+                <MarginArea marginNotes = {marginNotes} currentStitch={currentStitch} currentStory={currentStory} setNeedRefresh={setNeedRefresh} />
                 <StoryTextArea storyText = {storyText}/>
             </div>
     )

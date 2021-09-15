@@ -36,6 +36,7 @@ const Game = () => {
   const [needToUpdate, setNeedToUpdate] = useState(true);
   const [frontEndObject, setFrontEndObject] = useState(); // To be passed down in a callback function to the choice-maker component
   const [isEnding, setIsEnding] = useState(false);
+  const [needRefresh, setNeedRefresh] = useState(false); // Used to refresh frontend object outside loading and moving to new stitch
 
   const [showDebugTools, setShowDebugTools] = useState(false);
   
@@ -104,7 +105,7 @@ useEffect(() => {
     } catch (err) {}
   };
   fetchInitialFrontEndObject();
-}, [sendRequest, ssid]);
+}, [sendRequest, ssid, needRefresh]);
 
   const makeChoiceAndUpdate = async (destination) => {
     console.log(`new destination: ${choicesList[destination]}`)
@@ -172,6 +173,7 @@ useEffect(() => {
                 currentStory={currentStoryId}
                 setFrontEndObject={setFrontEndObject}
                 isEnding={isEnding}
+                setNeedRefresh={setNeedRefresh}
               ></Book>
             </div>
 

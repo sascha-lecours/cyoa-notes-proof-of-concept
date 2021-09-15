@@ -12,7 +12,7 @@ import { useForm } from '../util/hooks/formHooks';
 import { useHttpClient } from '../util/hooks/httpHook';
 import { AuthContext } from '../util/auth-context';
 
-const NoteAddingArea = ({ currentStitch, currentStory, toggleShowNoteAdder }) => {
+const NoteAddingArea = ({ currentStitch, currentStory, toggleShowNoteAdder, setNeedRefresh }) => {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const auth = useContext(AuthContext);
 
@@ -47,6 +47,7 @@ const NoteAddingArea = ({ currentStitch, currentStory, toggleShowNoteAdder }) =>
                 }
             );
             toggleShowNoteAdder();
+            setNeedRefresh(true);
         } catch (err) {
             
         }

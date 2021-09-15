@@ -3,7 +3,7 @@ import { myPalette } from './appearance/paletteConstants.js';
 import { MarginNotes } from './MarginNote.js';
 import NoteAddingArea from './NoteAddingArea.js';
 
-export const MarginArea = ({ marginNotes, currentStitch, currentStory }) => {
+export const MarginArea = ({ marginNotes, currentStitch, currentStory, setNeedRefresh }) => {
 
     const [showNoteAdder, setshowNoteAdder] = useState(false);
 
@@ -26,7 +26,8 @@ export const MarginArea = ({ marginNotes, currentStitch, currentStory }) => {
                     <NoteAddingArea 
                         currentStitch={currentStitch} 
                         currentStory={currentStory} 
-                        toggleShowNoteAdder={setshowNoteAdder} 
+                        toggleShowNoteAdder={setshowNoteAdder}
+                        setNeedRefresh={setNeedRefresh} 
                     />
                 }
             </div>

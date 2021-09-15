@@ -60,7 +60,7 @@ useEffect(() => {
   setStoryText(newStoryText);
   setMarginNotes(newMarginNotes);
   setIsEnding(newIsEnding);
-  setLastActiveStitch(newCurrentStitch);
+  //setLastActiveStitch(newCurrentStitch); // Caused bug with NON-first stitch notes
 
 
 }, [needToUpdate, frontEndObject]);

@@ -60,7 +60,7 @@ useEffect(() => {
   setStoryText(newStoryText);
   setMarginNotes(newMarginNotes);
   setIsEnding(newIsEnding);
-  //setLastActiveStitch(newCurrentStitch); // Caused bug with NON-first stitch notes
+  setLastActiveStitch(newCurrentStitch); 
 
 
 }, [needToUpdate, frontEndObject]);
@@ -87,7 +87,6 @@ useEffect(() => {
       retrievedSession = responseData;
 
       setCurrentStoryId(responseData.storySession.story);
-      setLastActiveStitch(responseData.storySession.sessionLastActiveStitch);
       console.log(`last active stitch: ${responseData.storySession.sessionLastActiveStitch}`);
     } catch (err) {}
     
@@ -109,6 +108,7 @@ useEffect(() => {
     } catch (err) {}
   };
   fetchInitialFrontEndObject();
+  if(needRefresh) setNeedRefresh(false);
 }, [sendRequest, ssid, needRefresh]);
 
   const makeChoiceAndUpdate = async (destination) => {

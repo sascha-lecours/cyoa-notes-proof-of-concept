@@ -21,7 +21,7 @@ const NoteAddingArea = ({ currentStitch, currentStory, toggleShowNoteAdder, setN
             content: {
             value: '',
             isValid: false
-        }
+            }
         },
         false
     );

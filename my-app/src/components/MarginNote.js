@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const MarginNotes = ({marginNotes}) => {
+export const MarginNotes = ({ marginNotes }) => {
 
     if (!marginNotes.length > 0) return null;
 
